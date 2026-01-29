@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SIGSEP - Pascal</title>
+    <link rel="icon" href="img/seguraicon.ico" type="image/x-icon">
+
+    <!-- Configurar la ruta para módulos AMD -->
+    <script>
+        window.dojoConfig = {
+            async: true,
+            packages: [{
+                name: "js",
+                location: location.pathname.replace(/\/[^/]+$/, "") + "/js"
+            }]
+        };
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.3.0/dist/chartjs-chart-matrix.min.js"></script>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://js.arcgis.com/4.31/"></script>
+
+    <link rel="stylesheet" href="./css/estilos.css">
+</head>
+
+<body>
+
+    <nav class="navbar navbar-light" style="background-color: #414d55; color: white;">
+        <div class="container-fluid">
+            <div class="navbar-title">
+                <img src="img/logosegura.png" alt="Logo" />
+                <span id="txtTitulo"></span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="content">
+        <div id="viewDiv">
+            <div class="map-dropdown">
+                <div id="conteoDiv" class="widget-box"></div>
+
+                <div id="iconQuery" class="icon-layer esri-icon" title="Watson: Área de Influencia"
+                    style="display: none;"></div>
+                <div id="iconIncidentes">
+                    <div id="iconRobos" class="icon-layer esri-icon" title="Robos" style="display: none;"></div>
+                    <div id="iconConvivencia" class="icon-layer esri-icon" title="Casos de Convivencia" style="display: none;"></div>
+                    <div id="iconExtorsion" class="icon-layer esri-icon" title="Extorsión" style="display: none;"></div>
+                    <div id="iconP_Armada" class="icon-layer esri-icon" title="Persona Armada" style="display: none;"></div>
+                    <div id="iconP_Herida" class="icon-layer esri-icon" title="Persona Herida" style="display: none;"></div>
+                    <div id="iconSecuestro" class="icon-layer esri-icon" title="Secuestro" style="display: none;"></div>
+                    <div id="iconSustancias" class="icon-layer esri-icon" title="Sustancias" style="display: none;"></div>
+                    <div id="iconSicariato" class="icon-layer esri-icon" title="Muertes Violentas" style="display: none;"></div>
+                </div>
+            </div>
+        </div>
+        <div id="timeSliderDiv"></div>
+    </div>
+
+    <footer>
+        Elaborado por: Coordinación Técnica de Estadística y Datos - Sistema de Información Geográfica <br>
+        Fuente: Sistema de información Estadística Segura EP y ECU-911 Samborondón
+    </footer>
+
+    <!-- Script principal del mapa -->
+    <script src="js/mapa.js"></script>
+</body>
+
+</html>

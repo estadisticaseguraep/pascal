@@ -1,0 +1,281 @@
+#viewDiv {
+    flex: 1;
+    height: 100%;
+    background-color: #414d55;
+}
+
+body,
+html {
+    height: 100%;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    color: white;
+    font-size: 0.8rem;
+}
+
+a {
+    color: white;
+}
+
+.content {
+    display: flex;
+    height: 100%;
+    position: relative;
+    background-color: #414d55;
+}
+
+.nav-text {
+    margin-left: 10px;
+}
+
+
+.navbar {
+    background-color: #2f3a40 !important; 
+    color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+    padding: 0 15px;
+    border-bottom: 2px solid rgb(249, 124, 15); 
+}
+
+.navbar-title {
+    font-size: 1.4rem; 
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+}
+
+.navbar img {
+    height: 45px; 
+    margin-right: 15px;
+    padding: 8px;
+}
+
+/* --- ESTILOS MEJORADOS DE FOOTER --- */
+footer {
+    background-color: #2f3a40; 
+    color: #ccc; 
+    padding: 10px 15px; 
+    text-align: right; 
+    font-size: 0.75rem; 
+    line-height: 1.4;
+    border-top: 1px solid #666; 
+}
+
+
+.map-dropdown {
+    position: absolute;
+    right: 10px;
+    z-index: 999;
+}
+
+.esri-view-width-xsmall .esri-expand--auto .esri-expand__container--expanded {
+    position: relative;
+}
+
+/* --- ESTILOS BASE PARA WIDGETS FLOTANTES --- */
+.widget-box {
+    background-color: #414d55;
+    border-radius: 6px; 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    margin-bottom: 10px;
+    padding: 0;
+    overflow: hidden; 
+    transition: background-color 0.4s ease; /* Transición para el efecto de filtro */
+    max-width: 270px;
+}
+
+/* Aplicar estilo base a los contenedores de íconos */
+#iconIncidentes {
+    background-color: #414d55;
+    border-radius: 6px; /* Ajustado a 6px */
+    padding: 8px 5px; /* Ajuste de padding */
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px 5px;
+    justify-content: flex-start;
+    align-items: center;
+    max-width: 300px;
+    max-height: 400px;
+    overflow-y: auto;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3); /* Añadido box-shadow aquí */
+}
+
+#iconIncidentes {
+    max-width: 340px;
+    max-height: 400px;
+} 
+/* --- FIN ESTILOS BASE PARA WIDGETS FLOTANTES --- */
+
+#iconQuery.active,
+#iconRobos.active,
+#iconConvivencia.active,
+#iconExtorsion.active,
+#iconP_Armada.active,
+#iconP_Herida.active,
+#iconSecuestro.active,
+#iconSicariato.active,
+#iconSustancias.active {
+    background-color: rgb(249, 124, 15);
+}
+
+#delitosChart {
+    width: 400px;
+    right: 1px;
+    background-color: #414d55;
+    padding: 10px;
+}
+
+.icon-layer {
+    cursor: pointer;
+    background-size: contain;
+    background-repeat: no-repeat;
+    border-radius: 4px;
+    width: 32px;
+    height: 34px;
+    background-color: #fff;
+    transition: background-color 0.3s;
+}
+
+/* --- Definiciones de Background Images de Iconos --- */
+
+#iconQuery{
+    background-image: url('../img/watson.png');
+}
+
+#iconRobos {
+    background-image: url('../img/robos.png');
+}
+
+#iconConvivencia {
+    background-image: url('../img/convivencia.png');
+}
+
+#iconExtorsion {
+    background-image: url('../img/extorsion.png');
+}
+
+#iconP_Armada {
+    background-image: url('../img/p_armada.png');
+}
+
+#iconP_Herida {
+    background-image: url('../img/p_herida.png');
+}
+
+#iconSecuestro {
+    background-image: url('../img/secuestro.png');
+}
+
+#iconSicariato {
+    background-image: url('../img/sicariato.png');
+}
+
+#iconSustancias {
+    background-image: url('../img/sustancias.png');
+}
+
+
+/* --- Animación de entrada --- */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+
+#timeSliderDiv {
+    left: 25%;
+    width: 100%;
+    bottom: 3%;
+}
+
+.form-select {
+    width: 180px;
+    height: 30px;
+    font-size: 0.7em;
+    padding-left: 5px;
+    height: 400px; 
+    overflow-y: auto;
+    max-height: 160px;
+    padding-top: 5px;
+}
+
+
+#heatmapChart,
+#chartContainer_2 {
+    background-color: #414d55 !important;
+    display: block;
+}
+
+#heatmapChart {
+    border-radius: 8px;
+}
+
+#selectContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 5px;
+    background-color: #2f3a40;
+    color: white;
+    width: 220px; 
+}
+
+#selectContainer label {
+    font-weight: bold;
+    margin-bottom: 2px;
+    color: #f9c653;
+    font-size: 0.8rem;
+}
+
+#selectContainer select {
+    width: 95%;
+    font-size: 0.75rem;
+    padding: 4px;
+    background-color: #414d55;
+    border: 1px solid #666;
+    color: white;
+    border-radius: 4px;
+    max-height: 150px;
+    overflow-y: auto;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .main-menu {
+        width: 200px;
+    }
+
+    #viewDiv {
+        margin-left: 0;
+    }
+
+    /* Ajuste para el navbar mejorado */
+    .navbar-title {
+        font-size: 1.2rem;
+    }
+
+    .form-select {
+        height: auto;
+        padding: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    /* Ajuste para el navbar mejorado */
+    .navbar-title {
+        font-size: 1rem;
+    }
+
+    .form-select {
+        height: auto;
+        padding: 5px;
+    }
+}
