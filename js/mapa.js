@@ -35,7 +35,7 @@ require([
         rutaPascualesLayer, rutaNuevaProsperinaLayer,
         rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
         ruta9OctLayer,
-        subCircuitosLayer
+        subCircuitosLayer, distritosLayer
     } = capasModule.crearCapas();
 
     const map        = mapSetup.crearMapaBase();
@@ -259,6 +259,9 @@ require([
     subCircuitosLayer.visible = false;
     map.add(subCircuitosLayer);
 
+        distritosLayer.visible = false;
+    map.add(distritosLayer);
+
     // Panel contenedor
     const panel = document.createElement("div");
     panel.style.cssText = `
@@ -323,7 +326,7 @@ require([
         subCircuitosLayer.visible = chkSubC.checked;
         traerGraficosAlFrente();
     });
-
+    
     const textoSubC = document.createElement("span");
     textoSubC.textContent = "Sub Circuitos";
     textoSubC.style.color = "#4dd9ac";
@@ -331,6 +334,27 @@ require([
     filaSubC.appendChild(chkSubC);
     filaSubC.appendChild(textoSubC);
     cuerpo.appendChild(filaSubC);
+
+    // Checkbox de Distritos
+    const filaDist = document.createElement("label");
+    filaDist.style.cssText = "display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;";
+
+    const chkDist = document.createElement("input");
+    chkDist.type = "checkbox";
+    chkDist.checked = false;
+    chkDist.style.accentColor = "#f96d53";
+    chkDist.addEventListener("change", () => {
+        distritosLayer.visible = chkDist.checked;
+        traerGraficosAlFrente();
+    });
+
+    const textoDist = document.createElement("span");
+    textoDist.textContent = "Distritos";
+    textoDist.style.color = "#f96d53";
+
+    filaDist.appendChild(chkDist);
+    filaDist.appendChild(textoDist);
+    cuerpo.appendChild(filaDist);
 
     panel.appendChild(cuerpo);
 

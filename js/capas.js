@@ -72,7 +72,7 @@ define([
                 symbol: {
                     type: "simple-line",
                     color: rutaColors[title] || [255, 255, 255, 0.8],
-                    width: 2,
+                    width: 4,
                     style: "solid"
                 }
             }
@@ -110,6 +110,54 @@ define([
             }]
         });
     }
+
+    function createZonasLayer(url) {
+        // Define un conjunto de colores únicos para cada distrito
+        const distritoColors = {
+            "PASCUALES": [255, 99, 71, 0.2],           // Tomate suave (Rojo)
+            "9 DE OCTUBRE": [255, 165, 0, 0.2],        // Naranja suave
+            "PROGRESO": [186, 85, 211, 0.2],           // Púrpura suave
+            "MODELO": [144, 238, 144, 0.2],            // Verde claro
+            "CEIBOS": [255, 255, 102, 0.2],            // Amarillo pastel
+            "PORTETE": [253, 253, 150, 0.2],           // Amarillo pastel suave
+            "FLORIDA": [255, 182, 193, 0.2],           // Rosa claro
+            "NUEVA PROSPERINA": [100, 149, 237, 0.2],  // Azul suave (Cornflower Blue)
+            "ESTEROS": [173, 216, 230, 0.2],           // Azul claro
+            "SUR": [255, 228, 181, 0.2]                // Crema suave
+        };
+
+        return new GeoJSONLayer({
+            url: url,
+            renderer: {
+                type: "unique-value",
+                field: "Distrito",
+                uniqueValueInfos: Object.keys(distritoColors).map(distrito => ({
+                    value: distrito,
+                    symbol: new SimpleFillSymbol({
+                        color: distritoColors[distrito],
+                        outline: { color: "black", width: 1 }
+                    }),
+                    label: distrito
+                }))
+            },
+            labelingInfo: [{
+                labelExpressionInfo: { expression: '"DISTRITO: " + $feature.Distrito' },
+                symbol: {
+                    type: "text",
+                    color: "blue",
+                    haloColor: "white",
+                    haloSize: "2px",
+                    font: {
+                        size: 8,
+                        family: "sans-serif",
+                        weight: "bold"
+                    }
+                },
+                placement: "center"
+            }]
+        });
+    }
+
     function crearCapas() {
         return {
             robosLayer: createIncidenteLayer("geojson/robos.geojson", "Robos"),
@@ -130,7 +178,8 @@ define([
             rutaEsterosLayer: createRutasLayer("geojson/ESTEROS.geojson", "Esteros"),
             rutaCeibosLayer: createRutasLayer("geojson/CEIBOS.geojson", "Ceibos"),
             ruta9OctLayer: createRutasLayer("geojson/9_OCT.geojson", "9 de Octubre"),
-            subCircuitosLayer: createSubCircuitosLayer("geojson/subcircuitos.geojson")
+            subCircuitosLayer: createSubCircuitosLayer("geojson/subcircuitos.geojson"),
+            distritosLayer: createZonasLayer("geojson/distritos.geojson")
         };
     }
 
