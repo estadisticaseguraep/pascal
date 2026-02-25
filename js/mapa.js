@@ -27,30 +27,35 @@ require([
         }
     }
 
-    const { robosLayer, convivenciaLayer, extorsionLayer, p_armadaLayer, p_heridaLayer, secuestroLayer, sustanciasLayer, sicariatoLayer } = capasModule.crearCapas();
-    const map = mapSetup.crearMapaBase();
-    const view = mapSetup.crearMapView(map);
+    const {
+        robosLayer, convivenciaLayer, extorsionLayer,
+        p_armadaLayer, p_heridaLayer, secuestroLayer,
+        sustanciasLayer, sicariatoLayer,
+        rutaModeloLayer, rutaSurLayer, rutaPorteteLayer,
+        rutaPascualesLayer, rutaNuevaProsperinaLayer,
+        rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
+        ruta9OctLayer
+    } = capasModule.crearCapas();
+
+    const map        = mapSetup.crearMapaBase();
+    const view       = mapSetup.crearMapView(map);
     const timeSlider = mapSetup.crearTimeSlider(view);
 
     const bufferLayer = new GraphicsLayer({ visible: false, title: "Capa de Filtro Circular" });
     const sketchLayer = new GraphicsLayer({ visible: false, title: "Capa de Controles" });
-    
+
     map.addMany([bufferLayer, sketchLayer]);
 
-    const sketchViewModel = new SketchViewModel({
-        view: view,
-        layer: sketchLayer
-    });
+    const sketchViewModel = new SketchViewModel({ view, layer: sketchLayer });
 
     let conteoDiv = document.createElement("div");
     let centerGraphic, edgeGraphic, polylineGraphic, bufferGraphic;
     let centerGeometryStart;
     let distanceLabelGraphic = null;
 
-    // ==================== SIMBOLOGÍA ====================
-    function createPointSymbol(color) { return { type: "simple-marker", style: "square", color: color, size: 10 }; }
-    function createLineSymbol() { return { type: "simple-line", color: [255, 255, 255], width: 2 }; }
-    function createBufferSymbol() { return { type: "simple-fill", color: [255, 255, 255, 0.4], outline: { color: [255, 255, 255], width: 2 } }; }
+    function createPointSymbol(color)    { return { type: "simple-marker", style: "square", color, size: 10 }; }
+    function createLineSymbol()          { return { type: "simple-line", color: [255,255,255], width: 2 }; }
+    function createBufferSymbol()        { return { type: "simple-fill", color: [255,255,255,0.4], outline: { color: [255,255,255], width: 2 } }; }
     function createDistanceLabelSymbol() { return { type: "text", color: "white", haloColor: "black", haloSize: 2, font: { size: 14, weight: "bold" }, horizontalAlignment: "left", verticalAlignment: "middle", xoffset: 10 }; }
 
     function updateDistanceLabel(distance, point) {
@@ -78,7 +83,9 @@ require([
         }
 
         if (centerGraphic && edgeGraphic && bufferGraphic && polylineGraphic) {
-            const { distance, midPoint, bufferGeometry } = await graficosModule.updateBuffer(centerGraphic, edgeGraphic, bufferGraphic, polylineGraphic, view);
+            const { distance, midPoint, bufferGeometry } = await graficosModule.updateBuffer(
+                centerGraphic, edgeGraphic, bufferGraphic, polylineGraphic, view
+            );
             updateDistanceLabel(distance, midPoint);
             actualizarTodo(ajustarTimeExtent(timeSlider.timeExtent), bufferGeometry);
         }
@@ -92,40 +99,38 @@ require([
         graficosModule.drawDraggableCircle(
             view, sketchViewModel, bufferLayer, createPointSymbol, createLineSymbol, createBufferSymbol
         ).then(async graphics => {
-            centerGraphic = graphics.centerGraphic;
-            edgeGraphic = graphics.edgeGraphic;
+            centerGraphic   = graphics.centerGraphic;
+            edgeGraphic     = graphics.edgeGraphic;
             polylineGraphic = graphics.polylineGraphic;
-            bufferGraphic = graphics.bufferGraphic;
+            bufferGraphic   = graphics.bufferGraphic;
 
-            const { distance, midPoint } = await graficosModule.updateBuffer(centerGraphic, edgeGraphic, bufferGraphic, polylineGraphic, view);
+            const { distance, midPoint } = await graficosModule.updateBuffer(
+                centerGraphic, edgeGraphic, bufferGraphic, polylineGraphic, view
+            );
             updateDistanceLabel(distance, midPoint);
-
-            sketchViewModel.cancel(); 
-            actualizarTodo(ajustarTimeExtent(timeSlider.timeExtent), null); 
+            sketchViewModel.cancel();
+            actualizarTodo(ajustarTimeExtent(timeSlider.timeExtent), null);
         });
     });
 
     map.layers.on("change", (event) => {
-        if (event.added || event.moved) {
-            traerGraficosAlFrente();
-        }
+        if (event.added || event.moved) traerGraficosAlFrente();
     });
 
     function crearLayerConfig(layer, visible, iconId) {
         return { layer, visible, iconElement: document.getElementById(iconId) };
     }
 
-    const recursos = [ crearLayerConfig(null, false, 'iconQuery') ];
-
+    const recursos  = [ crearLayerConfig(null, false, 'iconQuery') ];
     const incidentes = [
-        crearLayerConfig(robosLayer, false, 'iconRobos'),
-        crearLayerConfig(convivenciaLayer, false, 'iconConvivencia'),
-        crearLayerConfig(extorsionLayer, false, 'iconExtorsion'),
-        crearLayerConfig(p_armadaLayer, false, 'iconP_Armada'),
-        crearLayerConfig(p_heridaLayer, false, 'iconP_Herida'),
-        crearLayerConfig(secuestroLayer, false, 'iconSecuestro'),
-        crearLayerConfig(sustanciasLayer, false, 'iconSustancias'),
-        crearLayerConfig(sicariatoLayer, false, 'iconSicariato')
+        crearLayerConfig(robosLayer,       false, 'iconRobos'),
+        crearLayerConfig(convivenciaLayer,  false, 'iconConvivencia'),
+        crearLayerConfig(extorsionLayer,    false, 'iconExtorsion'),
+        crearLayerConfig(p_armadaLayer,     false, 'iconP_Armada'),
+        crearLayerConfig(p_heridaLayer,     false, 'iconP_Herida'),
+        crearLayerConfig(secuestroLayer,    false, 'iconSecuestro'),
+        crearLayerConfig(sustanciasLayer,   false, 'iconSustancias'),
+        crearLayerConfig(sicariatoLayer,    false, 'iconSicariato')
     ];
 
     function actualizarTodo(timeExtent, bufferGeometry = null) {
@@ -142,7 +147,9 @@ require([
         const query = layer.createQuery();
         if (options.timeExtent) {
             const pad = (n) => n < 10 ? '0' + n : n;
-            const formatDate = (d) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+            const formatDate = (d) =>
+                `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ` +
+                `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
             query.where = `Fecha >= timestamp '${formatDate(options.timeExtent.start)}' AND Fecha <= timestamp '${formatDate(options.timeExtent.end)}'`;
         } else {
             query.where = "1=1";
@@ -151,24 +158,30 @@ require([
             query.geometry = options.geometry;
             query.spatialRelationship = "intersects";
         }
-        return layer.queryFeatureCount(query).then(count => ({ title: layer.title, count })).catch(() => ({ title: layer.title, count: 0 }));
+        return layer.queryFeatureCount(query)
+            .then(count => ({ title: layer.title, count }))
+            .catch(()   => ({ title: layer.title, count: 0 }));
     }
 
     function actualizarConteo(timeExtent = null, geometry = null) {
         const options = { timeExtent, geometry };
-        const capasAConsultar = [robosLayer, convivenciaLayer, extorsionLayer, p_armadaLayer, p_heridaLayer, secuestroLayer, sustanciasLayer, sicariatoLayer];
+        const capasAConsultar = [
+            robosLayer, convivenciaLayer, extorsionLayer,
+            p_armadaLayer, p_heridaLayer, secuestroLayer,
+            sustanciasLayer, sicariatoLayer
+        ];
 
         Promise.all(capasAConsultar.map(lyr => contarEntidades(lyr, options))).then(results => {
             const totalIncidentes = results.reduce((sum, item) => sum + item.count, 0);
             results.sort((a, b) => b.count - a.count);
 
             const tituloConteo = geometry ? "Incidentes Filtrados" : "Incidentes";
-            const colorFondo = geometry ? "rgba(255, 171, 61, 0.4)" : "transparent";
+            const colorFondo   = geometry ? "rgba(255, 171, 61, 0.4)" : "transparent";
 
             conteoDiv.innerHTML = `
-                <div style="padding: 10px; width: 260px; font-size: 0.85em; background-color: ${colorFondo}; border-radius: 4px;">
-                    <h4 style="margin: 0; color: #f96d53;">${tituloConteo}: ${totalIncidentes}</h4>
-                    <ul style="padding-left: 1.1em; margin: 0;">
+                <div style="padding:10px;width:260px;font-size:0.85em;background-color:${colorFondo};border-radius:4px;">
+                    <h4 style="margin:0;color:#f96d53;">${tituloConteo}: ${totalIncidentes}</h4>
+                    <ul style="padding-left:1.1em;margin:0;">
                         ${results.map(r => `<li><strong>${r.title}:</strong> ${r.count}</li>`).join("")}
                     </ul>
                 </div>
@@ -195,7 +208,10 @@ require([
                 } else {
                     sketchViewModel.cancel();
                 }
-                actualizarTodo(ajustarTimeExtent(timeSlider.timeExtent), isNowVisible ? bufferGraphic?.geometry : null);
+                actualizarTodo(
+                    ajustarTimeExtent(timeSlider.timeExtent),
+                    isNowVisible ? bufferGraphic?.geometry : null
+                );
                 return;
             }
 
@@ -209,7 +225,90 @@ require([
         };
     });
 
-    [robosLayer, convivenciaLayer, extorsionLayer, p_armadaLayer, p_heridaLayer, secuestroLayer, sustanciasLayer, sicariatoLayer].forEach(layer => {
+    [
+        robosLayer, convivenciaLayer, extorsionLayer,
+        p_armadaLayer, p_heridaLayer, secuestroLayer,
+        sustanciasLayer, sicariatoLayer
+    ].forEach(layer => {
         layer.definitionExpression = null;
     });
+
+
+    // ==================== PANEL DE RUTAS ====================
+
+    const rutasConfig = [
+        { layer: rutaModeloLayer,          label: "Modelo"           },
+        { layer: rutaSurLayer,             label: "Sur"              },
+        { layer: rutaPorteteLayer,         label: "Portete"          },
+        { layer: rutaPascualesLayer,       label: "Pascuales"        },
+        { layer: rutaNuevaProsperinaLayer, label: "Nueva Prosperina" },
+        { layer: rutaFloridaLayer,         label: "Florida"          },
+        { layer: rutaEsterosLayer,         label: "Esteros"          },
+        { layer: rutaCeibosLayer,          label: "Ceibos"           },
+        { layer: ruta9OctLayer,            label: "9 de Octubre"     }
+    ];
+
+    // Agregar todas las rutas al mapa, inicialmente invisibles
+    rutasConfig.forEach(cfg => {
+        cfg.layer.visible = false;
+        map.add(cfg.layer);
+    });
+
+    // Panel contenedor
+    const panel = document.createElement("div");
+    panel.style.cssText = `
+        background: rgba(15, 20, 30, 0.88);
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 8px;
+        padding: 10px 14px;
+        width: 190px;
+        font-family: sans-serif;
+        font-size: 13px;
+        color: #ccc;
+    `;
+
+    // Título colapsable
+    const titulo = document.createElement("div");
+    titulo.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer;user-select:none;";
+    titulo.innerHTML = `
+        <strong style="color:#f96d53;font-size:13px;">RUTAS SEGURAS</strong>
+        <span id="rp-caret" style="color:#888;font-size:11px;">▼</span>
+    `;
+    panel.appendChild(titulo);
+
+    // Cuerpo con checkboxes
+    const cuerpo = document.createElement("div");
+
+    rutasConfig.forEach(cfg => {
+        const fila = document.createElement("label");
+        fila.style.cssText = "display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;";
+
+        const chk = document.createElement("input");
+        chk.type = "checkbox";
+        chk.checked = false;
+        chk.style.accentColor = "#f96d53";
+        chk.addEventListener("change", () => {
+            cfg.layer.visible = chk.checked;
+            traerGraficosAlFrente();
+        });
+
+        const texto = document.createElement("span");
+        texto.textContent = cfg.label;
+
+        fila.appendChild(chk);
+        fila.appendChild(texto);
+        cuerpo.appendChild(fila);
+    });
+
+    panel.appendChild(cuerpo);
+
+    // Colapsar / expandir
+    titulo.addEventListener("click", () => {
+        const abierto = cuerpo.style.display !== "none";
+        cuerpo.style.display = abierto ? "none" : "block";
+        document.getElementById("rp-caret").textContent = abierto ? "▶" : "▼";
+    });
+
+    view.ui.add(panel, "top-left");
+
 });
