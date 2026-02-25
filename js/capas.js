@@ -1,7 +1,8 @@
 // js/capas.js
 define([
-    "esri/layers/GeoJSONLayer"
-], function (GeoJSONLayer) {
+    "esri/layers/GeoJSONLayer",
+    "esri/symbols/SimpleFillSymbol"
+], function (GeoJSONLayer, SimpleFillSymbol) {
 
     function createIncidenteLayer(url, title) {
         return new GeoJSONLayer({
@@ -79,6 +80,36 @@ define([
     }
 
 
+    function createSubCircuitosLayer(url) {
+        return new GeoJSONLayer({
+            url: url,
+            title: "Sub Circuitos Policia",
+            visible: true,
+            outFields: ["*"],
+            renderer: {
+                type: "simple",
+                symbol: new SimpleFillSymbol({
+                    color: [226, 255, 224, 0.1],
+                    outline: { color: "white", width: 1.5 }
+                })
+            },
+            labelingInfo: [{
+                labelExpressionInfo: { expression: '$feature.Subcircuit' },
+                symbol: {
+                    type: "text",
+                    color: "blue",
+                    haloColor: "white",
+                    haloSize: "2px",
+                    font: {
+                        size: 11,
+                        family: "sans-serif",
+                        weight: "bold"
+                    }
+                },
+                placement: "center-center"
+            }]
+        });
+    }
     function crearCapas() {
         return {
             robosLayer: createIncidenteLayer("geojson/robos.geojson", "Robos"),
@@ -99,6 +130,7 @@ define([
             rutaEsterosLayer: createRutasLayer("geojson/ESTEROS.geojson", "Esteros"),
             rutaCeibosLayer: createRutasLayer("geojson/CEIBOS.geojson", "Ceibos"),
             ruta9OctLayer: createRutasLayer("geojson/9_OCT.geojson", "9 de Octubre"),
+            subCircuitosLayer: createSubCircuitosLayer("geojson/subcircuitos.geojson")
         };
     }
 

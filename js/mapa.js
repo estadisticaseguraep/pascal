@@ -34,7 +34,8 @@ require([
         rutaModeloLayer, rutaSurLayer, rutaPorteteLayer,
         rutaPascualesLayer, rutaNuevaProsperinaLayer,
         rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
-        ruta9OctLayer
+        ruta9OctLayer,
+        subCircuitosLayer
     } = capasModule.crearCapas();
 
     const map        = mapSetup.crearMapaBase();
@@ -254,6 +255,10 @@ require([
         map.add(cfg.layer);
     });
 
+    // Agregar subCircuitos al mapa, inicialmente invisible
+    subCircuitosLayer.visible = false;
+    map.add(subCircuitosLayer);
+
     // Panel contenedor
     const panel = document.createElement("div");
     panel.style.cssText = `
@@ -279,6 +284,7 @@ require([
     // Cuerpo con checkboxes
     const cuerpo = document.createElement("div");
 
+    // Checkboxes de rutas
     rutasConfig.forEach(cfg => {
         const fila = document.createElement("label");
         fila.style.cssText = "display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;";
@@ -299,6 +305,32 @@ require([
         fila.appendChild(texto);
         cuerpo.appendChild(fila);
     });
+
+    // Separador
+    const separador = document.createElement("div");
+    separador.style.cssText = "border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;";
+    cuerpo.appendChild(separador);
+
+    // Checkbox de Sub Circuitos
+    const filaSubC = document.createElement("label");
+    filaSubC.style.cssText = "display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;";
+
+    const chkSubC = document.createElement("input");
+    chkSubC.type = "checkbox";
+    chkSubC.checked = false;
+    chkSubC.style.accentColor = "#4dd9ac";
+    chkSubC.addEventListener("change", () => {
+        subCircuitosLayer.visible = chkSubC.checked;
+        traerGraficosAlFrente();
+    });
+
+    const textoSubC = document.createElement("span");
+    textoSubC.textContent = "Sub Circuitos";
+    textoSubC.style.color = "#4dd9ac";
+
+    filaSubC.appendChild(chkSubC);
+    filaSubC.appendChild(textoSubC);
+    cuerpo.appendChild(filaSubC);
 
     panel.appendChild(cuerpo);
 
