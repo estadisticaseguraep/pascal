@@ -158,6 +158,65 @@ define([
         });
     }
 
+    function createCamaraLayer(url, title, color) {
+        return new GeoJSONLayer({
+            url: url,
+            title: title,
+            renderer: {
+                type: "simple",
+                symbol: {
+                    type: "simple-marker",
+                    style: "circle",
+                    color: color,
+                    size: 8,
+                    outline: { color: [255, 255, 255, 0.6], width: 1 }
+                }
+            },
+            featureReduction: {
+                type: "cluster",
+                clusterRadius: "50px",
+                clusterMinSize: "24px",
+                clusterMaxSize: "40px",
+                // Al hacer click en el cluster, hace zoom y los puntos se separan
+                popupEnabled: true,
+                popupTemplate: {
+                    title: "Grupo de {cluster_count} cámaras",
+                    content: "Haz zoom para ver las cámaras individuales."
+                },
+                symbol: {
+                    type: "simple-marker",
+                    style: "circle",
+                    color: [...color.slice(0, 3), 0.6],  // mismo color con más transparencia
+                    size: "28px",
+                    outline: { color: "white", width: 1.5 }
+                },
+                labelingInfo: [{
+                    deconflictionStrategy: "none",
+                    labelExpressionInfo: { expression: "Text($feature.cluster_count, '#,###')" },
+                    symbol: {
+                        type: "text",
+                        color: "white",
+                        font: { size: 11, weight: "bold" }
+                    },
+                    labelPlacement: "center-center"
+                }]
+            },
+            popupTemplate: {
+                title: title,
+                content: [{
+                    type: "fields", fieldInfos: [
+                        { fieldName: "HOST", label: "Host" },
+                        { fieldName: "NOMBRE_SITIO", label: "Nombre Sitio" },
+                        { fieldName: "UBICACIÓN", label: "Ubicación" },
+                        { fieldName: "MEGAFONO", label: "Megáfono" },
+                        { fieldName: "TIPO", label: "Tipo" },
+                        { fieldName: "STATUS", label: "Estado" }
+                    ]
+                }]
+            }
+        });
+    }
+
     function crearCapas() {
         return {
             robosLayer: createIncidenteLayer("geojson/robos.geojson", "Robos"),
@@ -179,7 +238,10 @@ define([
             rutaCeibosLayer: createRutasLayer("geojson/CEIBOS.geojson", "Ceibos"),
             ruta9OctLayer: createRutasLayer("geojson/9_OCT.geojson", "9 de Octubre"),
             subCircuitosLayer: createSubCircuitosLayer("geojson/subcircuitos.geojson"),
-            distritosLayer: createZonasLayer("geojson/distritos.geojson")
+            distritosLayer: createZonasLayer("geojson/distritos.geojson"),
+
+            camarasActivasLayer: createCamaraLayer("geojson/camaras_activas.geojson", "Cámaras Activas", [0, 220, 120, 0.95]),
+            camarasVandalizadasLayer: createCamaraLayer("geojson/camaras_vandalizadas.geojson", "Cámaras Vandalizadas", [255, 80, 80, 0.95])
         };
     }
 

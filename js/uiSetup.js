@@ -1,13 +1,10 @@
 define([
-    "esri/widgets/Expand"
-], function (Expand) {
+    "esri/widgets/Expand",
+    "esri/widgets/Fullscreen"
+], function (Expand, Fullscreen) {
 
     return function setupUI(view, opciones) {
-        const {
-            recursos,
-            incidentes,
-            conteoDiv
-        } = opciones;
+        const { recursos, incidentes, conteoDiv } = opciones;
 
         const widgets = [
             {
@@ -29,7 +26,7 @@ define([
                 elementId: "timeSliderDiv",
                 expandIcon: "timer",
                 tooltip: "Regulador de tiempo",
-                autoExpand: true
+                autoExpand: false
             },
             {
                 position: "bottom-right",
@@ -40,36 +37,23 @@ define([
             }
         ];
 
-        widgets.forEach(config => {
-            const content = config.content || document.getElementById(config.elementId);
-
-            if (!content) {
-                console.warn(`Element not found: ${config.elementId}`);
-                return;
-            }
-
-            const expandConfig = {
-                view: view,
-                content: content,
-                expandIcon: config.expandIcon,
-                expandTooltip: config.tooltip,
-                expanded: config.autoExpand !== undefined ? config.autoExpand : true
-            };
-
-            view.ui.add(new Expand(expandConfig), config.position);
+        widgets.forEach(({ content, elementId, expandIcon, tooltip, autoExpand, position }) => {
+            const element = content || document.getElementById(elementId);
+            if (!element) { console.warn(`Element not found: ${elementId}`); return; }
+            view.ui.add(new Expand({
+                view,
+                content: element,
+                expandIcon,
+                expandTooltip: tooltip,
+                expanded: autoExpand ?? true
+            }), position);
         });
 
-        // Mostrar íconos activos y agregarlos al contenedor
-        recursos.forEach(layerObject => {
-            if (layerObject.visible) layerObject.iconElement.classList.add('active');
-            layerObject.iconElement.style.display = 'block';
+        view.ui.add(new Fullscreen({ view }), "top-right");
+
+        [...recursos, ...incidentes].forEach(({ visible, iconElement }) => {
+            if (visible) iconElement.classList.add('active');
+            iconElement.style.display = 'block';
         });
-
-        incidentes.forEach(layerObject => {
-            if (layerObject.visible) layerObject.iconElement.classList.add('active');
-            layerObject.iconElement.style.display = 'block';
-        });
-
-
     };
 });
