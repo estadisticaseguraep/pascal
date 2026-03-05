@@ -24,6 +24,7 @@ require([
                 // Cámaras encima de rutas
                 camarasActivasLayer,
                 camarasVandalizadasLayer,
+                camarasSeguraLayer,
                 // Buffer y sketch siempre al tope
                 bufferLayer,
                 sketchLayer
@@ -44,7 +45,7 @@ require([
         rutaPascualesLayer, rutaNuevaProsperinaLayer,
         rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
         ruta9OctLayer,
-        camarasActivasLayer, camarasVandalizadasLayer,
+        camarasActivasLayer, camarasVandalizadasLayer, camarasSeguraLayer,
         subCircuitosLayer, distritosLayer
     } = capasModule.crearCapas();
 
@@ -119,14 +120,14 @@ require([
 
     // ── Incidentes UI ─────────────────────────────────────────────────────────
     const incidentes = [
-        { layer: robosLayer, iconElement: document.getElementById('iconRobos') },
+        { layer: robosLayer,       iconElement: document.getElementById('iconRobos') },
         { layer: convivenciaLayer, iconElement: document.getElementById('iconConvivencia') },
-        { layer: extorsionLayer, iconElement: document.getElementById('iconExtorsion') },
-        { layer: p_armadaLayer, iconElement: document.getElementById('iconP_Armada') },
-        { layer: p_heridaLayer, iconElement: document.getElementById('iconP_Herida') },
-        { layer: secuestroLayer, iconElement: document.getElementById('iconSecuestro') },
-        { layer: sustanciasLayer, iconElement: document.getElementById('iconSustancias') },
-        { layer: sicariatoLayer, iconElement: document.getElementById('iconSicariato') }
+        { layer: extorsionLayer,   iconElement: document.getElementById('iconExtorsion') },
+        { layer: p_armadaLayer,    iconElement: document.getElementById('iconP_Armada') },
+        { layer: p_heridaLayer,    iconElement: document.getElementById('iconP_Herida') },
+        { layer: secuestroLayer,   iconElement: document.getElementById('iconSecuestro') },
+        { layer: sustanciasLayer,  iconElement: document.getElementById('iconSustancias') },
+        { layer: sicariatoLayer,   iconElement: document.getElementById('iconSicariato') }
     ].map(o => ({ ...o, visible: false }));
 
     const recursos = [{ layer: null, visible: false, iconElement: document.getElementById('iconQuery') }];
@@ -167,7 +168,8 @@ require([
         ];
         const capasCamaras = [
             camarasActivasLayer,
-            camarasVandalizadasLayer
+            camarasVandalizadasLayer,
+            camarasSeguraLayer
         ];
 
         function contarCamara(layer, geometry) {
@@ -203,15 +205,15 @@ require([
                 <h4 style="margin:0 0 6px;color:#f96d53;">${tituloLabel}: ${totalIncidentes}</h4>
                 <ul style="padding-left:1.1em;margin:0 0 8px;">
                     ${resultadosIncidentes.map(r =>
-                `<li><strong>${r.title}:</strong> ${r.count}</li>`
-            ).join("")}
+                        `<li><strong>${r.title}:</strong> ${r.count}</li>`
+                    ).join("")}
                 </ul>
                 <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:6px;">
                     <strong style="color:#f96d53;">Cámaras${esFiltrado ? " en área" : ""}: ${totalCamaras}</strong>
                     <ul style="padding-left:1.1em;margin:4px 0 0;">
                         ${resultadosCamaras.map(r =>
-                `<li><strong>${r.title}:</strong> ${r.count}</li>`
-            ).join("")}
+                            `<li><strong>${r.title}:</strong> ${r.count}</li>`
+                        ).join("")}
                     </ul>
                 </div>
             </div>`;
@@ -247,25 +249,26 @@ require([
 
     // ── Panel lateral (Rutas + Cámaras + Capas base) ──────────────────────────
     const rutasConfig = [
-        { layer: rutaModeloLayer, label: "Modelo" },
-        { layer: rutaSurLayer, label: "Sur" },
-        { layer: rutaPorteteLayer, label: "Portete" },
-        { layer: rutaPascualesLayer, label: "Pascuales" },
-        { layer: rutaNuevaProsperinaLayer, label: "Nueva Prosperina" },
-        { layer: rutaFloridaLayer, label: "Florida" },
-        { layer: rutaEsterosLayer, label: "Esteros" },
-        { layer: rutaCeibosLayer, label: "Ceibos" },
-        { layer: ruta9OctLayer, label: "9 de Octubre" }
+        { layer: rutaModeloLayer,           label: "Modelo" },
+        { layer: rutaSurLayer,              label: "Sur" },
+        { layer: rutaPorteteLayer,          label: "Portete" },
+        { layer: rutaPascualesLayer,        label: "Pascuales" },
+        { layer: rutaNuevaProsperinaLayer,  label: "Nueva Prosperina" },
+        { layer: rutaFloridaLayer,          label: "Florida" },
+        { layer: rutaEsterosLayer,          label: "Esteros" },
+        { layer: rutaCeibosLayer,           label: "Ceibos" },
+        { layer: ruta9OctLayer,             label: "9 de Octubre" }
     ];
 
     const camarasConfig = [
-        { layer: camarasActivasLayer, label: "Activas", color: "#00dc78" },
-        { layer: camarasVandalizadasLayer, label: "Vandalizadas", color: "#ff5050" }
+        { layer: camarasActivasLayer,      label: "Activas",      color: "#00dc78" },
+        { layer: camarasVandalizadasLayer, label: "Vandalizadas", color: "#ff5050" },
+        { layer: camarasSeguraLayer,       label: "Segura",       color: "#4a9eff" }
     ];
 
     const capasBaseConfig = [
         { layer: subCircuitosLayer, label: "Sub Circuitos", color: "#4dd9ac" },
-        { layer: distritosLayer, label: "Distritos", color: "#f96d53" }
+        { layer: distritosLayer,    label: "Distritos",     color: "#f96d53" }
     ];
 
     // Agregar todas al mapa, inicialmente invisibles

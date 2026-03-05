@@ -241,7 +241,8 @@ define([
             distritosLayer: createZonasLayer("geojson/distritos.geojson"),
 
             camarasActivasLayer: createCamaraLayer("geojson/camaras_activas.geojson", "Cámaras Activas", [0, 220, 120, 0.95]),
-            camarasVandalizadasLayer: createCamaraLayer("geojson/camaras_vandalizadas.geojson", "Cámaras Vandalizadas", [255, 80, 80, 0.95])
+            camarasVandalizadasLayer: createCamaraLayer("geojson/camaras_vandalizadas.geojson", "Cámaras Vandalizadas", [255, 80, 80, 0.95]),
+            camarasSeguraLayer: createCamaraLayer("geojson/camaras_segura.geojson", "Cámaras Seguras", [0, 80, 120, 0.95])
         };
     }
 
