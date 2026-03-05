@@ -24,7 +24,8 @@ require([
                 // Cámaras encima de rutas
                 camarasActivasLayer,
                 camarasVandalizadasLayer,
-                camarasSeguraLayer,
+                camarasSeguraALayer,
+                camarasSeguraILayer,
                 // Buffer y sketch siempre al tope
                 bufferLayer,
                 sketchLayer
@@ -45,7 +46,8 @@ require([
         rutaPascualesLayer, rutaNuevaProsperinaLayer,
         rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
         ruta9OctLayer,
-        camarasActivasLayer, camarasVandalizadasLayer, camarasSeguraLayer,
+        camarasActivasLayer, camarasVandalizadasLayer,
+        camarasSeguraALayer, camarasSeguraILayer,
         subCircuitosLayer, distritosLayer
     } = capasModule.crearCapas();
 
@@ -169,7 +171,8 @@ require([
         const capasCamaras = [
             camarasActivasLayer,
             camarasVandalizadasLayer,
-            camarasSeguraLayer
+            camarasSeguraALayer,
+            camarasSeguraILayer
         ];
 
         function contarCamara(layer, geometry) {
@@ -261,9 +264,10 @@ require([
     ];
 
     const camarasConfig = [
-        { layer: camarasActivasLayer,      label: "Activas",      color: "#00dc78" },
-        { layer: camarasVandalizadasLayer, label: "Vandalizadas", color: "#ff5050" },
-        { layer: camarasSeguraLayer,       label: "Segura",       color: "#4a9eff" }
+        { layer: camarasActivasLayer,      label: "Activas",             color: "#00dc78" },
+        { layer: camarasVandalizadasLayer, label: "Vandalizadas",        color: "#ff5050" },
+        { layer: camarasSeguraALayer,      label: "Segura EP Activas",   color: "#00b4ff" },
+        { layer: camarasSeguraILayer,      label: "Segura EP Inactivas", color: "#9664c8" }
     ];
 
     const capasBaseConfig = [
@@ -339,11 +343,9 @@ require([
     cuerpo.appendChild(crearSeccion("Rutas Seguras",
         rutasConfig.map(c => ({ ...c, color: "#ccc" }))));
     cuerpo.appendChild(crearSeparador());
-    cuerpo.appendChild(crearSeccion("Cámaras",
-        camarasConfig));
+    cuerpo.appendChild(crearSeccion("Cámaras", camarasConfig));
     cuerpo.appendChild(crearSeparador());
-    cuerpo.appendChild(crearSeccion("Zonas",
-        capasBaseConfig));
+    cuerpo.appendChild(crearSeccion("Zonas", capasBaseConfig));
 
     tituloEl.addEventListener("click", () => {
         const open = cuerpo.style.display !== "none";
