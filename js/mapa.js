@@ -253,7 +253,7 @@ require([
     // ── Panel lateral (Rutas + Cámaras + Capas base) ──────────────────────────
     const rutasConfig = [
         { layer: rutaModeloLayer,           label: "Modelo" },
-        { layer: rutaModelo2Layer,          label: "Modelo" },
+        { layer: rutaModelo2Layer,          label: "Modelo - Actualización" },
         { layer: rutaSurLayer,              label: "Sur" },
         { layer: rutaPorteteLayer,          label: "Portete" },
         { layer: rutaPascualesLayer,        label: "Pascuales" },
