@@ -239,6 +239,7 @@ define([
             ruta9OctLayer: createRutasLayer("geojson/9_OCT.geojson", "9 de Octubre"),
             subCircuitosLayer: createSubCircuitosLayer("geojson/subcircuitos.geojson"),
             distritosLayer: createZonasLayer("geojson/distritos.geojson"),
+            
             camarasActivasLayer: createCamaraLayer("geojson/camaras_activas.geojson", "Cámaras Activas", [0, 220, 120, 0.95]),
             camarasVandalizadasLayer: createCamaraLayer("geojson/camaras_vandalizadas.geojson", "Cámaras Vandalizadas", [255, 80, 80, 0.95]),
             camarasSeguraALayer: createCamaraLayer("geojson/camaras_segura_a.geojson", "Cámaras Segura EP Activas", [0, 180, 255, 0.95]),
