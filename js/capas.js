@@ -229,7 +229,6 @@ define([
             sicariatoLayer: createIncidenteLayer("geojson/sicariato.geojson", "Muertes Violentas"),
 
             rutaModeloLayer: createRutasLayer("geojson/MODELO.geojson", "Modelo"),
-            rutaModelo2Layer: createRutasLayer("geojson/MODELO_2.geojson", "Modelo - Actualización"),
             rutaSurLayer: createRutasLayer("geojson/SUR.geojson", "Sur"),
             rutaPorteteLayer: createRutasLayer("geojson/PORTETE.geojson", "Portete"),
             rutaPascualesLayer: createRutasLayer("geojson/PASCUALES.geojson", "Pascuales"),

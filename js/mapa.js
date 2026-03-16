@@ -17,7 +17,7 @@ require([
             const n = map.layers.length;
             const capasAlFrente = [
                 // Rutas encima de incidentes y coberturas
-                rutaModeloLayer, rutaModelo2Layer, rutaSurLayer, rutaPorteteLayer,
+                rutaModeloLayer, rutaSurLayer, rutaPorteteLayer,
                 rutaPascualesLayer, rutaNuevaProsperinaLayer,
                 rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
                 ruta9OctLayer,
@@ -42,7 +42,7 @@ require([
         robosLayer, convivenciaLayer, extorsionLayer,
         p_armadaLayer, p_heridaLayer, secuestroLayer,
         sustanciasLayer, sicariatoLayer,
-        rutaModeloLayer, rutaModelo2Layer, rutaSurLayer, rutaPorteteLayer,
+        rutaModeloLayer, rutaSurLayer, rutaPorteteLayer,
         rutaPascualesLayer, rutaNuevaProsperinaLayer,
         rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
         ruta9OctLayer,
@@ -253,7 +253,6 @@ require([
     // ── Panel lateral (Rutas + Cámaras + Capas base) ──────────────────────────
     const rutasConfig = [
         { layer: rutaModeloLayer,           label: "Modelo" },
-        { layer: rutaModelo2Layer,          label: "Modelo - Ampliación" },
         { layer: rutaSurLayer,              label: "Sur" },
         { layer: rutaPorteteLayer,          label: "Portete" },
         { layer: rutaPascualesLayer,        label: "Pascuales" },
