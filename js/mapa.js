@@ -6,7 +6,7 @@ require([
     capasModule, setupUI, graficosModule, mapSetup
 ) {
 
-    // ── Helpers ──────────────────────────────────────────────────────────────
+    // ── Helpers ───────────────────────────────────────────────────────────────
     function ajustarTimeExtent(timeExtent) {
         if (!timeExtent?.start || !timeExtent?.end) return timeExtent;
         return new TimeExtent({ start: new Date(timeExtent.start), end: new Date(timeExtent.end) });
@@ -16,19 +16,13 @@ require([
         requestAnimationFrame(() => {
             const n = map.layers.length;
             const capasAlFrente = [
-                // Rutas encima de incidentes y coberturas
                 rutaModeloLayer, rutaSurLayer, rutaPorteteLayer,
                 rutaPascualesLayer, rutaNuevaProsperinaLayer,
                 rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
                 ruta9OctLayer,
-                // Cámaras encima de rutas
-                camarasActivasLayer,
-                camarasVandalizadasLayer,
-                camarasSeguraALayer,
-                camarasSeguraILayer,
-                // Buffer y sketch siempre al tope
-                bufferLayer,
-                sketchLayer
+                camarasActivasLayer, camarasVandalizadasLayer,
+                camarasSeguraALayer, camarasSeguraILayer,
+                bufferLayer, sketchLayer
             ].filter(l => map.layers.includes(l));
 
             capasAlFrente.forEach((layer, i) => {
@@ -122,14 +116,14 @@ require([
 
     // ── Incidentes UI ─────────────────────────────────────────────────────────
     const incidentes = [
-        { layer: robosLayer,       iconElement: document.getElementById('iconRobos') },
+        { layer: robosLayer, iconElement: document.getElementById('iconRobos') },
         { layer: convivenciaLayer, iconElement: document.getElementById('iconConvivencia') },
-        { layer: extorsionLayer,   iconElement: document.getElementById('iconExtorsion') },
-        { layer: p_armadaLayer,    iconElement: document.getElementById('iconP_Armada') },
-        { layer: p_heridaLayer,    iconElement: document.getElementById('iconP_Herida') },
-        { layer: secuestroLayer,   iconElement: document.getElementById('iconSecuestro') },
-        { layer: sustanciasLayer,  iconElement: document.getElementById('iconSustancias') },
-        { layer: sicariatoLayer,   iconElement: document.getElementById('iconSicariato') }
+        { layer: extorsionLayer, iconElement: document.getElementById('iconExtorsion') },
+        { layer: p_armadaLayer, iconElement: document.getElementById('iconP_Armada') },
+        { layer: p_heridaLayer, iconElement: document.getElementById('iconP_Herida') },
+        { layer: secuestroLayer, iconElement: document.getElementById('iconSecuestro') },
+        { layer: sustanciasLayer, iconElement: document.getElementById('iconSustancias') },
+        { layer: sicariatoLayer, iconElement: document.getElementById('iconSicariato') }
     ].map(o => ({ ...o, visible: false }));
 
     const recursos = [{ layer: null, visible: false, iconElement: document.getElementById('iconQuery') }];
@@ -169,19 +163,14 @@ require([
             sustanciasLayer, sicariatoLayer
         ];
         const capasCamaras = [
-            camarasActivasLayer,
-            camarasVandalizadasLayer,
-            camarasSeguraALayer,
-            camarasSeguraILayer
+            camarasActivasLayer, camarasVandalizadasLayer,
+            camarasSeguraALayer, camarasSeguraILayer
         ];
 
         function contarCamara(layer, geometry) {
             const query = layer.createQuery();
             query.where = "1=1";
-            if (geometry) {
-                query.geometry = geometry;
-                query.spatialRelationship = "intersects";
-            }
+            if (geometry) { query.geometry = geometry; query.spatialRelationship = "intersects"; }
             return layer.queryFeatureCount(query)
                 .then(count => ({ title: layer.title, count }))
                 .catch(() => ({ title: layer.title, count: 0 }));
@@ -204,27 +193,30 @@ require([
             const tituloLabel = esFiltrado ? "Incidentes Filtrados" : "Incidentes";
 
             conteoDiv.innerHTML = `
-            <div style="padding:10px;width:260px;font-size:0.85em;background-color:${colorFondo};border-radius:4px;">
+            <div style="padding:10px;width:100%;box-sizing:border-box;font-size:0.85em;background-color:${colorFondo};border-radius:4px;">
                 <h4 style="margin:0 0 6px;color:#f96d53;">${tituloLabel}: ${totalIncidentes}</h4>
                 <ul style="padding-left:1.1em;margin:0 0 8px;">
                     ${resultadosIncidentes.map(r =>
-                        `<li><strong>${r.title}:</strong> ${r.count}</li>`
-                    ).join("")}
+                `<li><strong>${r.title}:</strong> ${r.count}</li>`
+            ).join("")}
                 </ul>
                 <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:6px;">
                     <strong style="color:#f96d53;">Cámaras${esFiltrado ? " en área" : ""}: ${totalCamaras}</strong>
                     <ul style="padding-left:1.1em;margin:4px 0 0;">
                         ${resultadosCamaras.map(r =>
-                            `<li><strong>${r.title}:</strong> ${r.count}</li>`
-                        ).join("")}
+                `<li><strong>${r.title}:</strong> ${r.count}</li>`
+            ).join("")}
                     </ul>
                 </div>
             </div>`;
         });
     }
 
-    setupUI(view, { recursos, incidentes, conteoDiv });
+    // ── UI: accordion + slots ─────────────────────────────────────────────────
+    // ❶ setupUI retorna el objeto con agregarCheckboxes
+    const ui = setupUI(view, { recursos, incidentes, conteoDiv });
 
+    // ❷ onclicks — sin cambios, misma lógica de siempre
     [...recursos, ...incidentes].forEach(obj => {
         obj.iconElement.onclick = async function () {
             if (obj.iconElement.id === 'iconQuery') {
@@ -250,109 +242,67 @@ require([
         };
     });
 
-    // ── Panel lateral (Rutas + Cámaras + Capas base) ──────────────────────────
+    // ── Configuración de capas para el accordion ──────────────────────────────
     const rutasConfig = [
-        { layer: rutaModeloLayer,           label: "Modelo" },
-        { layer: rutaSurLayer,              label: "Sur" },
-        { layer: rutaPorteteLayer,          label: "Portete" },
-        { layer: rutaPascualesLayer,        label: "Pascuales" },
-        { layer: rutaNuevaProsperinaLayer,  label: "Nueva Prosperina" },
-        { layer: rutaFloridaLayer,          label: "Florida" },
-        { layer: rutaEsterosLayer,          label: "Esteros" },
-        { layer: rutaCeibosLayer,           label: "Ceibos" },
-        { layer: ruta9OctLayer,             label: "9 de Octubre" }
+        { layer: rutaModeloLayer, label: "Modelo", color: "#ffff33" },
+        { layer: rutaSurLayer, label: "Sur", color: "#ff6464" },
+        { layer: rutaPorteteLayer, label: "Portete", color: "#33ccff" },
+        { layer: rutaPascualesLayer, label: "Pascuales", color: "#64ff96" },
+        { layer: rutaNuevaProsperinaLayer, label: "Nueva Prosperina", color: "#ff9633" },
+        { layer: rutaFloridaLayer, label: "Florida", color: "#c864ff" },
+        { layer: rutaEsterosLayer, label: "Esteros", color: "#33ffc8" },
+        { layer: rutaCeibosLayer, label: "Ceibos", color: "#ffc833" },
+        { layer: ruta9OctLayer, label: "9 de Octubre", color: "#ff3396" }
     ];
 
     const camarasConfig = [
-        { layer: camarasActivasLayer,      label: "Activas",             color: "#00dc78" },
-        { layer: camarasVandalizadasLayer, label: "Vandalizadas",        color: "#ff5050" },
-        { layer: camarasSeguraALayer,      label: "Segura EP Activas",   color: "#00b4ff" },
-        { layer: camarasSeguraILayer,      label: "Segura EP Inactivas", color: "#9664c8" }
+        { layer: camarasActivasLayer, label: "Activas", color: "#00dc78" },
+        { layer: camarasVandalizadasLayer, label: "Vandalizadas", color: "#ff5050" },
+        { layer: camarasSeguraALayer, label: "Segura EP Activas", color: "#00b4ff" },
+        { layer: camarasSeguraILayer, label: "Segura EP Inactivas", color: "#9664c8" }
     ];
 
     const capasBaseConfig = [
         { layer: subCircuitosLayer, label: "Sub Circuitos", color: "#4dd9ac" },
-        { layer: distritosLayer,    label: "Distritos",     color: "#f96d53" }
+        { layer: distritosLayer, label: "Distritos", color: "#f96d53" }
     ];
 
-    // Agregar todas al mapa, inicialmente invisibles
+    // ❸ Agregar todas al mapa inicialmente invisibles
     [...rutasConfig, ...camarasConfig, ...capasBaseConfig].forEach(cfg => {
         cfg.layer.visible = false;
         map.add(cfg.layer);
     });
 
-    // Función reutilizable para crear una fila con checkbox
-    function crearCheckbox({ layer, label, color = "#ccc" }) {
-        const fila = document.createElement("label");
-        fila.style.cssText = "display:flex;align-items:center;gap:8px;padding:3px 0;cursor:pointer;";
-
-        const chk = document.createElement("input");
-        chk.type = "checkbox";
-        chk.checked = false;
-        chk.style.accentColor = color;
-        chk.addEventListener("change", () => {
-            layer.visible = chk.checked;
+    // ❹ Inyectar checkboxes en los slots del accordion
+    //    agregarCheckboxes ya llama traerGraficosAlFrente via onChange
+    ui.agregarCheckboxes("rutas-slot", rutasConfig.map(c => ({
+        ...c,
+        onChange: (checked, layer) => {
             traerGraficosAlFrente();
-        });
+            if (checked && layer) {
+                layer.when(() => {
+                    layer.queryExtent().then(result => {
+                        if (result.extent) {
+                            view.goTo({
+                                target: result.extent.expand(1.3)
+                            }, {
+                                duration: 1200,
+                                easing: "ease-in-out"
+                            });
+                        }
+                    });
+                });
+            }
+        }
+    })));
 
-        const span = document.createElement("span");
-        span.textContent = label;
-        span.style.color = color;
+    ui.agregarCheckboxes("camaras-slot", camarasConfig.map(c => ({
+        ...c,
+        onChange: () => traerGraficosAlFrente()
+    })));
 
-        fila.append(chk, span);
-        return fila;
-    }
-
-    function crearSeparador() {
-        const sep = document.createElement("div");
-        sep.style.cssText = "border-top:1px solid rgba(255,255,255,0.1);margin:6px 0;";
-        return sep;
-    }
-
-    function crearSeccion(titulo, items) {
-        const wrap = document.createElement("div");
-        const lbl = document.createElement("div");
-        lbl.textContent = titulo;
-        lbl.style.cssText = "font-size:11px;color:#888;text-transform:uppercase;margin:4px 0 2px;letter-spacing:0.5px;";
-        wrap.appendChild(lbl);
-        items.forEach(cfg => wrap.appendChild(crearCheckbox(cfg)));
-        return wrap;
-    }
-
-    // Panel contenedor
-    const panel = document.createElement("div");
-    panel.style.cssText = `
-        background: rgba(15, 20, 30, 0.88);
-        border: 1px solid rgba(255, 255, 255, 0.15);
-        border-radius: 8px;
-        padding: 10px 14px;
-        width: 190px;
-        font-family: sans-serif;
-        font-size: 13px;
-        color: #ccc;
-    `;
-
-    const tituloEl = document.createElement("div");
-    tituloEl.style.cssText = "display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;cursor:pointer;user-select:none;";
-    tituloEl.innerHTML = `
-        <strong style="color:#f96d53;font-size:13px;">CAPAS</strong>
-        <span id="rp-caret" style="color:#888;font-size:11px;">▼</span>
-    `;
-
-    const cuerpo = document.createElement("div");
-    cuerpo.appendChild(crearSeccion("Rutas Seguras",
-        rutasConfig.map(c => ({ ...c, color: "#ccc" }))));
-    cuerpo.appendChild(crearSeparador());
-    cuerpo.appendChild(crearSeccion("Cámaras", camarasConfig));
-    cuerpo.appendChild(crearSeparador());
-    cuerpo.appendChild(crearSeccion("Zonas", capasBaseConfig));
-
-    tituloEl.addEventListener("click", () => {
-        const open = cuerpo.style.display !== "none";
-        cuerpo.style.display = open ? "none" : "block";
-        document.getElementById("rp-caret").textContent = open ? "▶" : "▼";
-    });
-
-    panel.append(tituloEl, cuerpo);
-    view.ui.add(panel, "top-left");
+    ui.agregarCheckboxes("zonas-slot", capasBaseConfig.map(c => ({
+        ...c,
+        onChange: () => traerGraficosAlFrente()
+    })));
 });

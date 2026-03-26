@@ -52,33 +52,52 @@ define([
     }
 
     const rutaColors = {
-        "Modelo": [255, 255, 51, 0.9],   // amarillo
-        "Sur": [255, 100, 100, 0.9],   // rojo suave
-        "Portete": [51, 204, 255, 0.9],   // celeste
-        "Pascuales": [100, 255, 150, 0.9],   // verde
-        "Nueva Prosperina": [255, 150, 51, 0.9],   // naranja
-        "Florida": [200, 100, 255, 0.9],   // morado
-        "Esteros": [51, 255, 200, 0.9],   // turquesa
-        "Ceibos": [255, 200, 51, 0.9],   // dorado
-        "9 de Octubre": [255, 51, 150, 0.9],   // rosa
+        "Modelo": [255, 255, 51],
+        "Sur": [255, 100, 100],
+        "Portete": [51, 204, 255],
+        "Pascuales": [100, 255, 150],
+        "Nueva Prosperina": [255, 150, 51],
+        "Florida": [200, 100, 255],
+        "Esteros": [51, 255, 200],
+        "Ceibos": [255, 200, 51],
+        "9 de Octubre": [255, 51, 150]
     };
 
     function createRutasLayer(url, title) {
+        const baseColor = rutaColors[title] || [255, 255, 255];
+        const [r, g, b] = baseColor;
+
+        // 3 variaciones distintas del color base rotando canales RGB
+        const stops = [
+            { value: 0, color: [r, g, b, 1.0] },                                                          // color original
+            { value: 1, color: [Math.max(b - 30, 0), r, Math.min(g + 30, 255), 1.0] },                   // rotación B→R→G
+            { value: 2, color: [Math.min(g + 30, 255), Math.max(b - 30, 0), r, 1.0] }                    // rotación G→B→R
+        ];
+
         return new GeoJSONLayer({
             url: url,
             title: title,
             renderer: {
                 type: "simple",
-                symbol: {
-                    type: "simple-line",
-                    color: rutaColors[title] || [255, 255, 255, 0.8],
-                    width: 4,
-                    style: "solid"
-                }
+                symbol: { type: "simple-line", width: 4, style: "solid" },
+                visualVariables: [{
+                    type: "color",
+                    field: "SymbolID",
+                    stops
+                }]
+            },
+            popupTemplate: {
+                title: "{Name}",
+                content: [{
+                    type: "fields", fieldInfos: [
+                        { fieldName: "Name", label: "Nombre" },
+                        { fieldName: "PopupInfo", label: "Descripción" },
+                        { fieldName: "SymbolID", label: "Tramo ID" }
+                    ]
+                }]
             }
         });
     }
-
 
     function createSubCircuitosLayer(url) {
         return new GeoJSONLayer({
@@ -239,7 +258,7 @@ define([
             ruta9OctLayer: createRutasLayer("geojson/9_OCT.geojson", "9 de Octubre"),
             subCircuitosLayer: createSubCircuitosLayer("geojson/subcircuitos.geojson"),
             distritosLayer: createZonasLayer("geojson/distritos.geojson"),
-            
+
             camarasActivasLayer: createCamaraLayer("geojson/camaras_activas.geojson", "Cámaras Activas", [0, 220, 120, 0.95]),
             camarasVandalizadasLayer: createCamaraLayer("geojson/camaras_vandalizadas.geojson", "Cámaras Vandalizadas", [255, 80, 80, 0.95]),
             camarasSeguraALayer: createCamaraLayer("geojson/camaras_segura_a.geojson", "Cámaras Segura EP Activas", [0, 180, 255, 0.95]),
