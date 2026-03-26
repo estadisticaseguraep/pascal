@@ -43,11 +43,10 @@ define([
 
         // ── 5. Panel con tabs — top-left ──────────────────────────────────────
         const TABS = [
-            { id: "incidentes", label: "Incidentes", icon: "layers",       isEmoji: false },
-            { id: "rutas",      label: "Rutas",      icon: "road-sign",    isEmoji: false },
-            { id: "camaras",    label: "Cámaras",    icon: "video",        isEmoji: false },
-            { id: "zonas",      label: "Zonas",      icon: "map-pin",      isEmoji: false },
-            { id: "watson",     label: "Watson",     icon: "🤖",           isEmoji: true  }
+            { id: "incidentes", label: "Incidentes", icon: "layers",    isEmoji: false },
+            { id: "rutas",      label: "Rutas",      icon: "road-sign", isEmoji: false },
+            { id: "camaras",    label: "Cámaras",    icon: "video",     isEmoji: false },
+            { id: "zonas",      label: "Zonas",      icon: "map-pin",   isEmoji: false }
         ];
 
         const panel  = document.createElement("div");
@@ -56,10 +55,10 @@ define([
         const tabBar = document.createElement("div");
         tabBar.className = "cp-tabs";
 
-        const body   = document.createElement("div");
+        const body = document.createElement("div");
         body.className = "cp-body";
 
-        const panes  = {};
+        const panes = {};
 
         TABS.forEach(({ id, label, icon, isEmoji }) => {
             const tab = document.createElement("div");
@@ -120,7 +119,7 @@ define([
             const chk = document.createElement("input");
             chk.type = "checkbox";
             chk.checked = obj.visible ?? false;
-            chk.style.accentColor = "#f96d53";
+            chk.style.accentColor = "#0079c1";
             chk.addEventListener("change", () => {
                 obj.iconElement.click();
             });
@@ -151,34 +150,6 @@ define([
             panes[id].appendChild(slot);
         });
 
-        // ── Pane: Watson ──────────────────────────────────────────────────────
-        const iconQueryEl = document.getElementById("iconQuery");
-        if (iconQueryEl) {
-            iconQueryEl.style.display = "none";
-
-            const watsonBtn = document.createElement("div");
-            watsonBtn.className = "cp-watson-btn";
-
-            const watsonIcon = document.createElement("div");
-            watsonIcon.className = "cp-watson-icon";
-
-            const watsonLbl = document.createElement("span");
-            watsonLbl.textContent = "Activar Radar";
-
-            watsonBtn.append(watsonIcon, watsonLbl);
-
-            watsonBtn.addEventListener("click", () => {
-                iconQueryEl.click();
-                setTimeout(() => {
-                    const isActive = iconQueryEl.classList.contains("active");
-                    watsonBtn.classList.toggle("active", isActive);
-                    watsonLbl.textContent = isActive ? "Desactivar Radar" : "Activar Radar";
-                }, 0);
-            });
-
-            panes["watson"].append(watsonBtn, iconQueryEl);
-        }
-
         panel.append(tabBar, body);
 
         view.ui.add(new Expand({
@@ -189,13 +160,77 @@ define([
             expanded: true
         }), "top-left");
 
+        // ── 6. Watson · Radar — bottom-left ───────────────────────────────────
+        const watsonPanel = document.createElement("div");
+        watsonPanel.className = "watson-panel cp-panel";
+
+        const watsonHeader = document.createElement("div");
+        watsonHeader.className = "watson-header";
+        watsonHeader.innerHTML = `
+            <span>Watson · Radar de Consulta</span>
+        `;
+        watsonPanel.appendChild(watsonHeader);
+
+        const watsonTitle = document.createElement("p");
+        watsonTitle.className = "watson-title";
+        watsonTitle.textContent = "Seleccione una geometría:";
+        watsonPanel.appendChild(watsonTitle);
+
+        const watsonBtnBar = document.createElement("div");
+        watsonBtnBar.className = "watson-btnbar";
+
+        const drawTools = [
+            { id: "queryPoint",   icon: "pin",     label: "Punto",    type: "point"    },
+            { id: "queryLine",    icon: "line",     label: "Línea",    type: "polyline" },
+            { id: "queryPolygon", icon: "polygon",  label: "Polígono", type: "polygon"  }
+        ];
+
+        drawTools.forEach(({ id, icon, label, type }) => {
+            const btn = document.createElement("button");
+            btn.className = "watson-tool-btn";
+            btn.id = id;
+            btn.dataset.drawType = type;
+            btn.title = label;
+            btn.innerHTML = `
+                <calcite-icon icon="${icon}" scale="s"></calcite-icon>
+                <span>${label}</span>
+            `;
+            watsonBtnBar.appendChild(btn);
+        });
+        watsonPanel.appendChild(watsonBtnBar);
+
+        const bufferWrap = document.createElement("div");
+        bufferWrap.className = "watson-buffer-wrap";
+        bufferWrap.innerHTML = `
+            <label class="watson-label">
+                Buffer: <strong id="bufferValueLabel">0</strong> m
+            </label>
+            <input type="range" id="queryBufferSlider"
+                   min="0" max="2000" value="0" step="10"
+                   style="width:100%;accent-color:#0079c1;" />
+        `;
+        watsonPanel.appendChild(bufferWrap);
+
+        const clearBtn = document.createElement("button");
+        clearBtn.className = "watson-clear-btn";
+        clearBtn.innerHTML = `<calcite-icon icon="trash" scale="s"></calcite-icon> Limpiar`;
+        watsonPanel.appendChild(clearBtn);
+
+        view.ui.add(new Expand({
+            view,
+            content: watsonPanel,
+            expandIcon: "analysis",
+            expandTooltip: "Watson · Radar",
+            expanded: true
+        }), "bottom-left");
+
         // ── API pública ───────────────────────────────────────────────────────
         return {
             agregarCheckboxes(slotId, items) {
                 const slot = panel.querySelector(`[data-slot="${slotId}"]`);
                 if (!slot) return;
                 slot.innerHTML = "";
-                items.forEach(({ layer, label, color = "#333", onChange }) => {
+                items.forEach(({ layer, label, color = "#0079c1", onChange }) => {
                     const row = document.createElement("label");
                     row.className = "cp-row";
 

@@ -31,35 +31,35 @@ a {
 
 
 .navbar {
-    background-color: #2f3a40 !important; 
+    background-color: #2f3a40 !important;
     color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2); 
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
     padding: 0 15px;
-    border-bottom: 2px solid rgb(249, 124, 15); 
+    border-bottom: 2px solid rgb(249, 124, 15);
 }
 
 .navbar-title {
-    font-size: 1.4rem; 
+    font-size: 1.4rem;
     font-weight: 600;
     display: flex;
     align-items: center;
 }
 
 .navbar img {
-    height: 45px; 
+    height: 45px;
     margin-right: 15px;
     padding: 8px;
 }
 
 /* --- ESTILOS MEJORADOS DE FOOTER --- */
 footer {
-    background-color: #2f3a40; 
-    color: #ccc; 
-    padding: 10px 15px; 
-    text-align: right; 
-    font-size: 0.75rem; 
+    background-color: #2f3a40;
+    color: #ccc;
+    padding: 10px 15px;
+    text-align: right;
+    font-size: 0.75rem;
     line-height: 1.4;
-    border-top: 1px solid #666; 
+    border-top: 1px solid #666;
 }
 
 
@@ -98,7 +98,7 @@ footer {
     height: 30px;
     font-size: 0.7em;
     padding-left: 5px;
-    height: 400px; 
+    height: 400px;
     overflow-y: auto;
     max-height: 160px;
     padding-top: 5px;
@@ -122,7 +122,7 @@ footer {
     padding: 5px;
     background-color: #2f3a40;
     color: white;
-    width: 220px; 
+    width: 220px;
 }
 
 #selectContainer label {
@@ -166,6 +166,7 @@ footer {
 }
 
 @media (max-width: 576px) {
+
     /* Ajuste para el navbar mejorado */
     .navbar-title {
         font-size: 1rem;
@@ -177,103 +178,207 @@ footer {
     }
 }
 
-/* ── Panel de Control (uiSetup) ────────────────────────────────────────────── */
+/* ── Panel de Control ───────────────────────────────────────────────────── */
 .cp-panel {
     background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    width: 230px;
-    font-family: sans-serif;
+    border-radius: 4px;
+    width: 240px;
+    font-family: "Avenir Next", Avenir, sans-serif;
     font-size: 13px;
-    color: #333;
+    color: #323232;
     overflow: hidden;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
 }
+
 .cp-tabs {
     display: flex;
-    border-bottom: 1px solid #e0e0e0;
-    background: #f5f5f5;
+    background: #f3f3f3;
+    border-bottom: 1px solid #d3d3d3;
 }
+
 .cp-tab {
     flex: 1;
     padding: 7px 2px 6px;
-    text-align: center;
     cursor: pointer;
     font-size: 9px;
-    color: #888;
+    color: #6e6e6e;
     border-bottom: 2px solid transparent;
-    transition: color 0.15s, border-color 0.15s;
-    user-select: none;
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 3px;
+    user-select: none;
+    transition: color 0.15s;
 }
-.cp-tab calcite-icon { --calcite-icon-size: 14px; }
-.cp-tab .cp-tab-emoji { font-size: 14px; line-height: 1; }
-.cp-tab:hover { color: #444; }
+
+.cp-tab:hover {
+    color: #323232;
+}
+
 .cp-tab.active {
-    color: #f96d53;
-    border-bottom: 2px solid #f96d53;
+    color: #0079c1;
+    border-bottom: 2px solid #0079c1;
     background: #fff;
 }
-.cp-tab.active calcite-icon { color: #f96d53; }
+
+.cp-tab calcite-icon {
+    --calcite-icon-size: 14px;
+}
+
 .cp-body {
     padding: 10px;
-    max-height: 340px;
+    max-height: 320px;
     overflow-y: auto;
 }
-.cp-pane { display: none; }
-.cp-pane.active { display: block; }
+
+.cp-pane {
+    display: none;
+}
+
+.cp-pane.active {
+    display: block;
+}
 
 .cp-row {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 4px 0;
+    padding: 4px 2px;
     cursor: pointer;
     font-size: 12px;
-    color: #333;
+    color: #323232;
 }
+
+.cp-row:hover {
+    background: #e8f4fb;
+    border-radius: 3px;
+}
+
 .cp-dot {
     width: 8px;
     height: 8px;
     border-radius: 50%;
     flex-shrink: 0;
 }
-.cp-row input[type=checkbox] { margin: 0; cursor: pointer; }
 
-.cp-watson-btn {
+.cp-row input[type=checkbox] {
+    margin: 0;
+    cursor: pointer;
+    accent-color: #0079c1;
+}
+
+/* ── Watson · Radar ─────────────────────────────────────────────────────── */
+.watson-panel {
+    background: #fff;
+    border-radius: 4px;
+    font-family: "Avenir Next", Avenir, sans-serif;
+    font-size: 13px;
+    color: #323232;
+    overflow: hidden;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.watson-header {
+    background: #0079c1;
+    color: #fff;
+    padding: 8px 10px;
+    font-size: 0.82em;
+    font-weight: 600;
     display: flex;
     align-items: center;
-    gap: 8px;
-    width: 100%;
-    padding: 8px 10px;
-    border-radius: 6px;
-    border: 1px solid #ddd;
-    background: #f9f9f9;
+    gap: 7px;
+    letter-spacing: 0.03em;
+}
+
+.watson-header-icon {
+    font-size: 1.1em;
+}
+
+.watson-title {
+    margin: 0;
+    padding: 8px 10px 4px;
+    font-size: 0.75em;
+    color: #6e6e6e;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.watson-btnbar {
+    display: flex;
+    gap: 6px;
+    padding: 0 10px 8px;
+}
+
+.watson-tool-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 4px;
+    background: #f3f3f3;
+    border: 1px solid #d3d3d3;
+    border-radius: 3px;
+    color: #6e6e6e;
+    font-size: 0.75em;
     cursor: pointer;
-    font-size: 12px;
-    color: #333;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.watson-tool-btn:hover {
+    background: #e8f4fb;
+    border-color: #0079c1;
+    color: #323232;
+}
+
+.watson-tool-btn.active {
+    background: #0079c1;
+    border-color: #0079c1;
+    color: #fff;
+}
+
+.watson-buffer-wrap {
+    display: none;
+    padding: 4px 10px 8px;
+    border-top: 1px solid #e8e8e8;
+}
+
+.watson-label {
+    font-size: 0.78em;
+    color: #6e6e6e;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.watson-label strong {
+    color: #0079c1;
+}
+
+#queryBufferSlider {
+    width: 100%;
+    accent-color: #0079c1;
+    cursor: pointer;
+}
+
+.watson-clear-btn {
+    width: calc(100% - 20px);
+    margin: 0 10px 10px;
+    padding: 6px;
+    background: #f3f3f3;
+    border: 1px solid #d3d3d3;
+    border-radius: 3px;
+    color: #6e6e6e;
+    font-size: 0.8em;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
     transition: background 0.15s;
-    box-sizing: border-box;
-}
-.cp-watson-btn:hover { background: #f0f0f0; }
-.cp-watson-btn.active {
-    background: #fff3f0;
-    border-color: #f96d53;
-    color: #f96d53;
-}
-.cp-watson-emoji { font-size: 18px; }
-
-/* Icono Watson en el botón — reutiliza el background-image del CSS existente */
-.cp-watson-icon {
-    width: 32px;
-    height: 34px;
-    background-image: url('../img/watson.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-    flex-shrink: 0;
 }
 
+.watson-clear-btn:hover {
+    background: #fee;
+    border-color: #c00;
+    color: #c00;
+}
