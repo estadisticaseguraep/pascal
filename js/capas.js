@@ -231,6 +231,14 @@ define([
                         { fieldName: "TIPO", label: "Tipo" },
                         { fieldName: "STATUS", label: "Estado" }
                     ]
+                },
+                {
+                    type: "text",
+                    text: `
+                    <div> <a href="https://www.google.com/maps/search/?api=1&query={Latitud},{Longitud}" target="_blank">
+                           Ver en Google Maps </a>
+                    </div>
+                `
                 }]
             }
         });
