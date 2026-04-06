@@ -23,7 +23,7 @@ require([
                 rutaPascualesLayer, rutaNuevaProsperinaLayer,
                 rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
                 ruta9OctLayer,
-                camarasActivasLayer, camarasVandalizadasLayer,
+                camarasActivasLayer, camarasVandalizadasLayer, camarasEcuLayer, camarasAtmLayer,
                 camarasSeguraALayer, camarasSeguraILayer
             ].filter(l => map.layers.includes(l));
 
@@ -42,7 +42,7 @@ require([
         rutaPascualesLayer, rutaNuevaProsperinaLayer,
         rutaFloridaLayer, rutaEsterosLayer, rutaCeibosLayer,
         ruta9OctLayer,
-        camarasActivasLayer, camarasVandalizadasLayer,
+        camarasActivasLayer, camarasVandalizadasLayer, camarasEcuLayer, camarasAtmLayer,
         camarasSeguraALayer, camarasSeguraILayer,
         subCircuitosLayer, distritosLayer
     } = capasModule.crearCapas();
@@ -89,7 +89,7 @@ require([
             sustanciasLayer, sicariatoLayer
         ];
         const capasCamaras = [
-            camarasActivasLayer, camarasVandalizadasLayer,
+            camarasActivasLayer, camarasVandalizadasLayer, camarasEcuLayer, camarasAtmLayer,
             camarasSeguraALayer, camarasSeguraILayer
         ];
 
@@ -205,7 +205,9 @@ require([
         { layer: camarasActivasLayer,      label: "Activas",            color: "#00dc78" },
         { layer: camarasVandalizadasLayer, label: "Vandalizadas",       color: "#ff5050" },
         { layer: camarasSeguraALayer,      label: "Segura EP Activas",  color: "#00b4ff" },
-        { layer: camarasSeguraILayer,      label: "Segura EP Inactivas",color: "#9664c8" }
+        { layer: camarasSeguraILayer,      label: "Segura EP Inactivas",color: "#9664c8" },
+        { layer: camarasEcuLayer,          label: "Cámaras ECU",        color: "#9cff00" },
+        { layer: camarasAtmLayer,          label: "Cámaras ATM",        color: "#ff9a00" }
     ];
 
     const capasBaseConfig = [

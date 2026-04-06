@@ -262,7 +262,9 @@ define([
             camarasActivasLayer: createCamaraLayer("geojson/camaras_activas.geojson", "Cámaras Activas", [0, 220, 120, 0.95]),
             camarasVandalizadasLayer: createCamaraLayer("geojson/camaras_vandalizadas.geojson", "Cámaras Vandalizadas", [255, 80, 80, 0.95]),
             camarasSeguraALayer: createCamaraLayer("geojson/camaras_segura_a.geojson", "Cámaras Segura EP Activas", [0, 180, 255, 0.95]),
-            camarasSeguraILayer: createCamaraLayer("geojson/camaras_segura_i.geojson", "Cámaras Segura EP Inactivas", [150, 100, 200, 0.95])
+            camarasSeguraILayer: createCamaraLayer("geojson/camaras_segura_i.geojson", "Cámaras Segura EP Inactivas", [150, 100, 200, 0.95]),
+            camarasEcuLayer: createCamaraLayer("geojson/camaras_ecu.geojson", "Cámaras ECU", [155, 255, 0, 0.95]),
+            camarasAtmLayer: createCamaraLayer("geojson/camaras_atm.geojson", "Cámaras ATM", [255, 165, 0, 0.95])
         };
     }
 
