@@ -47,8 +47,8 @@ require([
         subCircuitosLayer, distritosLayer
     } = capasModule.crearCapas();
 
-    const map        = mapSetup.crearMapaBase();
-    const view       = mapSetup.crearMapView(map);
+    const map = mapSetup.crearMapaBase();
+    const view = mapSetup.crearMapView(map);
     const timeSlider = mapSetup.crearTimeSlider(view);
 
     const conteoDiv = document.createElement("div");
@@ -107,50 +107,108 @@ require([
             ...capasCamaras.map(l => contarCamara(l, geometry))
         ]).then(results => {
             const resultadosIncidentes = results.slice(0, capasIncidentes.length);
-            const resultadosCamaras    = results.slice(capasIncidentes.length);
+            const resultadosCamaras = results.slice(capasIncidentes.length);
 
             resultadosIncidentes.sort((a, b) => b.count - a.count);
 
             const totalIncidentes = resultadosIncidentes.reduce((s, r) => s + r.count, 0);
-            const totalCamaras    = resultadosCamaras.reduce((s, r) => s + r.count, 0);
+            const totalCamaras = resultadosCamaras.reduce((s, r) => s + r.count, 0);
+            const esFiltrado = !!geometry;
 
-            const esFiltrado   = !!geometry;
-            const colorFondo   = esFiltrado ? "rgba(255, 171, 61, 0.4)" : "transparent";
-            const tituloLabel  = esFiltrado ? "Incidentes Filtrados" : "Incidentes";
+            // Preservar estado abierto/cerrado si ya existe el acordeón
+            const abiertosAntes = {
+                incidentes: conteoDiv.querySelector('#ca-incidentes')?.classList.contains('open') ?? false,
+                camaras: conteoDiv.querySelector('#ca-camaras')?.classList.contains('open') ?? true
+            };
 
             conteoDiv.innerHTML = `
-            <div style="padding:10px;width:320px;box-sizing:border-box;font-size:0.85em;
-                        background-color:${colorFondo};border-radius:4px;">
-                <h4 style="margin:0 0 6px;color:#f96d53;">${tituloLabel}: ${totalIncidentes}</h4>
-                <ul style="padding-left:1.1em;margin:0 0 8px;">
-                    ${resultadosIncidentes.map(r =>
-                        `<li><strong>${r.title}:</strong> ${r.count}</li>`
-                    ).join("")}
+        <style>
+          .ca-wrap{width:280px;font-size:12px}
+          .ca-banner{display:flex;align-items:center;gap:5px;font-size:11px;color:#d97706;
+            background:rgba(251,191,36,0.15);border-radius:5px 5px 0 0;padding:4px 10px;
+            border:1px solid rgba(251,191,36,0.3);border-bottom:none}
+          .ca-banner.hidden{display:none}
+          .ca-accordion{border:1px solid rgba(128,128,128,0.2);border-radius:5px;overflow:hidden}
+          .ca-banner+.ca-accordion{border-radius:0 0 5px 5px}
+          .ca-item{border-bottom:1px solid rgba(128,128,128,0.15)}
+          .ca-item:last-child{border-bottom:none}
+          .ca-header{all:unset;display:flex;align-items:center;justify-content:space-between;
+            width:100%;padding:6px 10px;box-sizing:border-box;cursor:pointer;
+            background:rgba(128,128,128,0.06)}
+          .ca-header:hover{background:rgba(128,128,128,0.12)}
+          .ca-title{font-weight:500;color:#f96d53}
+          .ca-total{font-size:11px;color:#888;margin-left:5px;font-weight:400}
+          .ca-chevron{width:11px;height:11px;transition:transform .2s;color:#888;flex-shrink:0}
+          .ca-item.open .ca-chevron{transform:rotate(180deg)}
+          .ca-body{display:none;padding:5px 10px 7px}
+          .ca-item.open .ca-body{display:block}
+          .ca-list{list-style:none;margin:0;padding:0}
+          .ca-list li{display:flex;justify-content:space-between;padding:2px 0;
+            border-bottom:1px solid rgba(128,128,128,0.08)}
+          .ca-list li:last-child{border-bottom:none}
+          .ca-list li .n{font-weight:500}
+        </style>
+
+        <div class="ca-wrap">
+          <div class="ca-banner${esFiltrado ? "" : " hidden"}">⚠ Área filtrada activa</div>
+
+          <div class="ca-accordion">
+            <div class="ca-item${abiertosAntes.incidentes ? " open" : ""}" id="ca-incidentes">
+              <button class="ca-header"
+                onclick="document.getElementById('ca-incidentes').classList.toggle('open')">
+                <span>
+                  <span class="ca-title">Incidentes</span>
+                  <span class="ca-total">${totalIncidentes}</span>
+                </span>
+                <svg class="ca-chevron" viewBox="0 0 16 16" fill="none"
+                     stroke="currentColor" stroke-width="2.2">
+                  <polyline points="3,5 8,11 13,5"/>
+                </svg>
+              </button>
+              <div class="ca-body">
+                <ul class="ca-list">
+                  ${resultadosIncidentes.map(r =>
+                `<li><span>${r.title}</span><span class="n">${r.count}</span></li>`
+            ).join("")}
                 </ul>
-                <div style="border-top:1px solid rgba(0,0,0,0.15);padding-top:6px;">
-                    <strong style="color:#f96d53;">
-                        Cámaras${esFiltrado ? " en área" : ""}: ${totalCamaras}
-                    </strong>
-                    <ul style="padding-left:1.1em;margin:4px 0 0;">
-                        ${resultadosCamaras.map(r =>
-                            `<li><strong>${r.title}:</strong> ${r.count}</li>`
-                        ).join("")}
-                    </ul>
-                </div>
-            </div>`;
+              </div>
+            </div>
+
+            <div class="ca-item${abiertosAntes.camaras ? " open" : ""}" id="ca-camaras">
+              <button class="ca-header"
+                onclick="document.getElementById('ca-camaras').classList.toggle('open')">
+                <span>
+                  <span class="ca-title">Cámaras</span>
+                  <span class="ca-total">${totalCamaras}</span>
+                </span>
+                <svg class="ca-chevron" viewBox="0 0 16 16" fill="none"
+                     stroke="currentColor" stroke-width="2.2">
+                  <polyline points="3,5 8,11 13,5"/>
+                </svg>
+              </button>
+              <div class="ca-body">
+                <ul class="ca-list">
+                  ${resultadosCamaras.map(r =>
+                `<li><span>${r.title}</span><span class="n">${r.count}</span></li>`
+            ).join("")}
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>`;
         });
     }
 
     // ── Incidentes UI ─────────────────────────────────────────────────────────
     const incidentes = [
-        { layer: robosLayer,       iconElement: document.getElementById('iconRobos')       },
+        { layer: robosLayer, iconElement: document.getElementById('iconRobos') },
         { layer: convivenciaLayer, iconElement: document.getElementById('iconConvivencia') },
-        { layer: extorsionLayer,   iconElement: document.getElementById('iconExtorsion')   },
-        { layer: p_armadaLayer,    iconElement: document.getElementById('iconP_Armada')    },
-        { layer: p_heridaLayer,    iconElement: document.getElementById('iconP_Herida')    },
-        { layer: secuestroLayer,   iconElement: document.getElementById('iconSecuestro')   },
-        { layer: sustanciasLayer,  iconElement: document.getElementById('iconSustancias')  },
-        { layer: sicariatoLayer,   iconElement: document.getElementById('iconSicariato')   }
+        { layer: extorsionLayer, iconElement: document.getElementById('iconExtorsion') },
+        { layer: p_armadaLayer, iconElement: document.getElementById('iconP_Armada') },
+        { layer: p_heridaLayer, iconElement: document.getElementById('iconP_Herida') },
+        { layer: secuestroLayer, iconElement: document.getElementById('iconSecuestro') },
+        { layer: sustanciasLayer, iconElement: document.getElementById('iconSustancias') },
+        { layer: sicariatoLayer, iconElement: document.getElementById('iconSicariato') }
     ].map(o => ({ ...o, visible: false }));
 
     const recursos = [];
@@ -190,29 +248,29 @@ require([
 
     // ── Configuración de capas para el accordion ──────────────────────────────
     const rutasConfig = [
-        { layer: rutaModeloLayer,          label: "Modelo",            color: "#ffff33" },
-        { layer: rutaSurLayer,             label: "Sur",               color: "#ff6464" },
-        { layer: rutaPorteteLayer,         label: "Portete",           color: "#33ccff" },
-        { layer: rutaPascualesLayer,       label: "Pascuales",         color: "#64ff96" },
-        { layer: rutaNuevaProsperinaLayer, label: "Nueva Prosperina",  color: "#ff9633" },
-        { layer: rutaFloridaLayer,         label: "Florida",           color: "#c864ff" },
-        { layer: rutaEsterosLayer,         label: "Esteros",           color: "#33ffc8" },
-        { layer: rutaCeibosLayer,          label: "Ceibos",            color: "#ffc833" },
-        { layer: ruta9OctLayer,            label: "9 de Octubre",      color: "#ff3396" }
+        { layer: rutaModeloLayer, label: "Modelo", color: "#ffff33" },
+        { layer: rutaSurLayer, label: "Sur", color: "#ff6464" },
+        { layer: rutaPorteteLayer, label: "Portete", color: "#33ccff" },
+        { layer: rutaPascualesLayer, label: "Pascuales", color: "#64ff96" },
+        { layer: rutaNuevaProsperinaLayer, label: "Nueva Prosperina", color: "#ff9633" },
+        { layer: rutaFloridaLayer, label: "Florida", color: "#c864ff" },
+        { layer: rutaEsterosLayer, label: "Esteros", color: "#33ffc8" },
+        { layer: rutaCeibosLayer, label: "Ceibos", color: "#ffc833" },
+        { layer: ruta9OctLayer, label: "9 de Octubre", color: "#ff3396" }
     ];
 
     const camarasConfig = [
-        { layer: camarasActivasLayer,      label: "Activas",            color: "#00dc78" },
-        { layer: camarasVandalizadasLayer, label: "Vandalizadas",       color: "#ff5050" },
-        { layer: camarasSeguraALayer,      label: "Segura EP Activas",  color: "#00b4ff" },
-        { layer: camarasSeguraILayer,      label: "Segura EP Inactivas",color: "#9664c8" },
-        { layer: camarasEcuLayer,          label: "Cámaras ECU",        color: "#9cff00" },
-        { layer: camarasAtmLayer,          label: "Cámaras ATM",        color: "#ff9a00" }
+        { layer: camarasActivasLayer, label: "Activas", color: "#00dc78" },
+        { layer: camarasVandalizadasLayer, label: "Vandalizadas", color: "#ff5050" },
+        { layer: camarasSeguraALayer, label: "Segura EP Activas", color: "#00b4ff" },
+        { layer: camarasSeguraILayer, label: "Segura EP Inactivas", color: "#9664c8" },
+        { layer: camarasEcuLayer, label: "Cámaras ECU", color: "#9cff00" },
+        { layer: camarasAtmLayer, label: "Cámaras ATM", color: "#ff9a00" }
     ];
 
     const capasBaseConfig = [
         { layer: subCircuitosLayer, label: "Sub Circuitos", color: "#4dd9ac" },
-        { layer: distritosLayer,    label: "Distritos",     color: "#f96d53" }
+        { layer: distritosLayer, label: "Distritos", color: "#f96d53" }
     ];
 
     [...rutasConfig, ...camarasConfig, ...capasBaseConfig].forEach(cfg => {
@@ -229,7 +287,7 @@ require([
                     layer.queryExtent().then(result => {
                         if (result.extent) {
                             view.goTo({ target: result.extent.expand(1.3) },
-                                      { duration: 1200, easing: "ease-in-out" });
+                                { duration: 1200, easing: "ease-in-out" });
                         }
                     });
                 });
