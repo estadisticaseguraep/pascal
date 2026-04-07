@@ -47,14 +47,14 @@ require([
         subCircuitosLayer, distritosLayer
     } = capasModule.crearCapas();
 
-    const map     = mapSetup.crearMapaBase();
-    const view    = mapSetup.crearMapView(map);
+    const map        = mapSetup.crearMapaBase();
+    const view       = mapSetup.crearMapView(map);
     const timeSlider = mapSetup.crearTimeSlider(view);
 
     const conteoDiv = document.createElement("div");
 
-    // ── Geometría de query activa (la gestiona queryGeometria.js) ─────────────
-    let queryGeomActiva = null;   // se actualiza via callbacks
+    // ── Geometría de query activa ─────────────────────────────────────────────
+    let queryGeomActiva = null;
 
     // ── Conteo ────────────────────────────────────────────────────────────────
     function actualizarTodo(timeExtent, geometry = null) {
@@ -119,7 +119,7 @@ require([
             const tituloLabel  = esFiltrado ? "Incidentes Filtrados" : "Incidentes";
 
             conteoDiv.innerHTML = `
-            <div style="padding:10px;width:100%;box-sizing:border-box;font-size:0.85em;
+            <div style="padding:10px;width:320px;box-sizing:border-box;font-size:0.85em;
                         background-color:${colorFondo};border-radius:4px;">
                 <h4 style="margin:0 0 6px;color:#f96d53;">${tituloLabel}: ${totalIncidentes}</h4>
                 <ul style="padding-left:1.1em;margin:0 0 8px;">
@@ -127,7 +127,7 @@ require([
                         `<li><strong>${r.title}:</strong> ${r.count}</li>`
                     ).join("")}
                 </ul>
-                <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:6px;">
+                <div style="border-top:1px solid rgba(0,0,0,0.15);padding-top:6px;">
                     <strong style="color:#f96d53;">
                         Cámaras${esFiltrado ? " en área" : ""}: ${totalCamaras}
                     </strong>

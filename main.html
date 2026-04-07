@@ -16,8 +16,13 @@
          Si el usuario no está logueado o no aceptó el disclaimer, redirige al login.
     -->
     <style>
-        body { visibility: hidden; }
-        body.authenticated { visibility: visible; }
+        body {
+            visibility: hidden;
+        }
+
+        body.authenticated {
+            visibility: visible;
+        }
     </style>
 
     <script>
@@ -37,11 +42,16 @@
             const disclaimerOk = sessionStorage.getItem('disclaimerAccepted') === 'true';
 
             if (!user || !disclaimerOk) {
-                // Sin sesión activa o sin disclaimer aceptado → volver al login
                 window.location.replace('index.html');
             } else {
-                // Sesión válida → mostrar la app
-                document.body.classList.add('authenticated');
+
+                if (document.body) {
+                    document.body.classList.add('authenticated');
+                } else {
+                    document.addEventListener('DOMContentLoaded', () => {
+                        document.body.classList.add('authenticated');
+                    });
+                }
             }
         });
 
@@ -96,22 +106,25 @@
             <div class="map-dropdown">
                 <div id="conteoDiv" class="widget-box"></div>
 
-                <div id="iconQuery"       class="icon-layer esri-icon" title="Watson: Área de Influencia" style="display: none;"></div>
-                <div id="iconRobos"       class="icon-layer esri-icon" title="Robos"              style="display: none;"></div>
-                <div id="iconConvivencia" class="icon-layer esri-icon" title="Casos de Convivencia" style="display: none;"></div>
-                <div id="iconExtorsion"   class="icon-layer esri-icon" title="Extorsión"           style="display: none;"></div>
-                <div id="iconP_Armada"    class="icon-layer esri-icon" title="Persona Armada"      style="display: none;"></div>
-                <div id="iconP_Herida"    class="icon-layer esri-icon" title="Persona Herida"      style="display: none;"></div>
-                <div id="iconSecuestro"   class="icon-layer esri-icon" title="Secuestro"           style="display: none;"></div>
-                <div id="iconSustancias"  class="icon-layer esri-icon" title="Sustancias"          style="display: none;"></div>
-                <div id="iconSicariato"   class="icon-layer esri-icon" title="Muertes Violentas"   style="display: none;"></div>
+                <div id="iconQuery" class="icon-layer esri-icon" title="Watson: Área de Influencia"
+                    style="display: none;"></div>
+                <div id="iconRobos" class="icon-layer esri-icon" title="Robos" style="display: none;"></div>
+                <div id="iconConvivencia" class="icon-layer esri-icon" title="Casos de Convivencia"
+                    style="display: none;"></div>
+                <div id="iconExtorsion" class="icon-layer esri-icon" title="Extorsión" style="display: none;"></div>
+                <div id="iconP_Armada" class="icon-layer esri-icon" title="Persona Armada" style="display: none;"></div>
+                <div id="iconP_Herida" class="icon-layer esri-icon" title="Persona Herida" style="display: none;"></div>
+                <div id="iconSecuestro" class="icon-layer esri-icon" title="Secuestro" style="display: none;"></div>
+                <div id="iconSustancias" class="icon-layer esri-icon" title="Sustancias" style="display: none;"></div>
+                <div id="iconSicariato" class="icon-layer esri-icon" title="Muertes Violentas" style="display: none;">
+                </div>
             </div>
         </div>
         <div id="timeSliderDiv"></div>
     </div>
 
     <footer>
-        Elaborado por: Coordinación Técnica de Estadística y Datos — Sistema de Información Geográfica &copy; 2025 <br>
+        Elaborado por: Coordinación Técnica de Estadística y Datos — Sistema de Información Geográfica &copy; 2026 <br>
         Fuente: Sistema de Información Estadística Segura EP y ECU-911 Samborondón
     </footer>
 
@@ -119,4 +132,5 @@
     <script src="js/mapa.js"></script>
 
 </body>
+
 </html>
