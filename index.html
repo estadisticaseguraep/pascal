@@ -1,81 +1,767 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SIGSEP - Pascal</title>
+    <title>Acceso — PASCAL</title>
     <link rel="icon" href="img/seguraicon.ico" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Inter:wght@300;400;500&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
-    <!-- Configurar la ruta para módulos AMD -->
-    <script>
-        window.dojoConfig = {
-            async: true,
-            packages: [{
-                name: "js",
-                location: location.pathname.replace(/\/[^/]+$/, "") + "/js"
-            }]
-        };
-    </script>
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chartjs-chart-matrix@1.3.0/dist/chartjs-chart-matrix.min.js"></script>
+        :root {
+            --orange: #f97c0f;
+            --dark: #0a0e14;
+            --panel: rgba(10, 14, 20, 0.82);
+            --border: rgba(249, 124, 15, 0.25);
+            --muted: rgba(255, 255, 255, 0.45);
+            --input-bg: rgba(255, 255, 255, 0.06);
+        }
 
-    <link rel="stylesheet" href="https://js.arcgis.com/4.31/esri/themes/light/main.css">
-    <link rel="stylesheet" href="https://js.arcgis.com/calcite-components/2.13.2/calcite.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <script src="https://js.arcgis.com/4.31/"></script>
-    <script type="module" src="https://js.arcgis.com/calcite-components/2.13.2/calcite.esm.js"></script>
+        html,
+        body {
+            height: 100%;
+            font-family: 'Inter', sans-serif;
+            background: var(--dark);
+            overflow: hidden;
+        }
 
-    <link rel="stylesheet" href="./css/estilos.css">
+        /* ════ BACKGROUND ════ */
+        .bg {
+            position: fixed;
+            inset: 0;
+            z-index: 0;
+            background:
+                radial-gradient(ellipse 80% 60% at 70% 40%, rgba(249, 124, 15, 0.12) 0%, transparent 65%),
+                radial-gradient(ellipse 50% 50% at 20% 80%, rgba(249, 124, 15, 0.07) 0%, transparent 60%),
+                linear-gradient(160deg, #0a0e14 0%, #111820 60%, #0d1117 100%);
+        }
+
+        .bg::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background-image:
+                linear-gradient(rgba(249, 124, 15, 0.07) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(249, 124, 15, 0.07) 1px, transparent 1px);
+            background-size: 48px 48px;
+            animation: gridDrift 25s linear infinite;
+            opacity: 0.6;
+        }
+
+        .bg::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            opacity: 0.35;
+            animation: scanLine 6s ease-in-out infinite;
+        }
+
+        @keyframes gridDrift {
+            0% {
+                background-position: 0 0;
+            }
+
+            100% {
+                background-position: 48px 48px;
+            }
+        }
+
+        @keyframes scanLine {
+            0% {
+                top: -2px;
+                opacity: 0;
+            }
+
+            10% {
+                opacity: 0.35;
+            }
+
+            90% {
+                opacity: 0.35;
+            }
+
+            100% {
+                top: 100%;
+                opacity: 0;
+            }
+        }
+
+        /* ════ LOGIN PANEL ════ */
+        .wrapper {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel {
+            width: 400px;
+            background: var(--panel);
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            padding: 44px 40px 36px;
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            box-shadow:
+                0 0 0 1px rgba(249, 124, 15, 0.08),
+                0 32px 80px rgba(0, 0, 0, 0.6),
+                inset 0 1px 0 rgba(255, 255, 255, 0.04);
+            animation: panelIn 0.6s cubic-bezier(0.22, 1, 0.36, 1) both;
+            position: relative;
+        }
+
+        @keyframes panelIn {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .panel::before,
+        .panel::after {
+            content: '';
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-color: var(--orange);
+            border-style: solid;
+        }
+
+        .panel::before {
+            top: -1px;
+            left: -1px;
+            border-width: 2px 0 0 2px;
+        }
+
+        .panel::after {
+            bottom: -1px;
+            right: -1px;
+            border-width: 0 2px 2px 0;
+        }
+
+        .panel-header {
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .logo-img {
+            height: 44px;
+            width: auto;
+            margin-bottom: 20px;
+            opacity: 0.95;
+        }
+
+        .brand {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 2.2rem;
+            font-weight: 700;
+            color: var(--orange);
+            letter-spacing: 5px;
+            line-height: 1;
+        }
+
+        .brand-sub {
+            font-size: 0.62rem;
+            font-weight: 400;
+            color: var(--muted);
+            letter-spacing: 0.4px;
+            margin-top: 5px;
+            line-height: 1.4;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--border), transparent);
+            margin: 20px 0 28px;
+        }
+
+        .field {
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 500;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 6px;
+        }
+
+        .field-wrap {
+            position: relative;
+        }
+
+        .field-icon {
+            position: absolute;
+            left: 13px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: rgba(249, 124, 15, 0.5);
+            font-size: 0.8rem;
+            pointer-events: none;
+        }
+
+        .field input {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 3px;
+            padding: 11px 14px 11px 36px;
+            color: #fff;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.88rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+        }
+
+        .field input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        .field input:focus {
+            border-color: rgba(249, 124, 15, 0.6);
+            background: rgba(249, 124, 15, 0.05);
+            box-shadow: 0 0 0 3px rgba(249, 124, 15, 0.12);
+        }
+
+        .btn-login {
+            width: 100%;
+            margin-top: 8px;
+            padding: 12px;
+            background: linear-gradient(135deg, #f97c0f, #e06500);
+            border: none;
+            border-radius: 3px;
+            color: #fff;
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: opacity 0.2s, transform 0.15s;
+        }
+
+        .btn-login::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .btn-login:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-login:hover::after {
+            opacity: 1;
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+            opacity: 0.95;
+        }
+
+        .btn-login:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        #message {
+            min-height: 20px;
+            font-size: 0.78rem;
+            text-align: center;
+            margin-top: 14px;
+            color: #ffc107;
+            font-weight: 500;
+            letter-spacing: 0.3px;
+        }
+
+        .page-footer {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 10px 20px;
+            background: rgba(0, 0, 0, 0.55);
+            border-top: 1px solid rgba(249, 124, 15, 0.08);
+            font-size: 0.68rem;
+            color: var(--muted);
+            text-align: right;
+            letter-spacing: 0.3px;
+        }
+
+        /* ════ DISCLAIMER — estructura SAM, paleta PASCAL ════ */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+
+            to {
+                opacity: 0;
+            }
+        }
+
+        @keyframes glowPulse {
+
+            0%,
+            100% {
+                box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+            }
+
+            50% {
+                box-shadow: 0 10px 40px rgba(249, 124, 15, 0.2);
+            }
+        }
+
+        #disclaimerOverlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            z-index: 9999;
+            background: rgba(0, 0, 0, 0.95);
+            align-items: center;
+            justify-content: center;
+        }
+
+        #disclaimerOverlay.visible {
+            display: flex;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        .disclaimer-card {
+            background: linear-gradient(145deg, #1a1a1a 0%, #212830 100%);
+            border: 1px solid rgba(249, 124, 15, 0.25);
+            border-radius: 16px;
+            padding: 45px 40px;
+            max-width: 650px;
+            width: 90%;
+            text-align: center;
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+
+        .disclaimer-logo {
+            margin-bottom: 28px;
+        }
+
+        .disclaimer-logo img {
+            max-width: 180px;
+            height: auto;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.4));
+        }
+
+        .disclaimer-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #f97c0f 0%, #c85e00 100%);
+            color: white;
+            padding: 8px 20px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            margin-bottom: 22px;
+            text-transform: uppercase;
+            box-shadow: 0 2px 10px rgba(249, 124, 15, 0.35);
+        }
+
+        .disclaimer-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 10px;
+            letter-spacing: -0.5px;
+        }
+
+        .disclaimer-divider {
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--orange), transparent);
+            margin: 18px auto 22px;
+        }
+
+        .disclaimer-text {
+            font-size: 14px;
+            color: #b8b8b8;
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 22px;
+            padding: 0 10px;
+        }
+
+        .disclaimer-text strong {
+            color: #fff;
+            font-weight: 600;
+        }
+
+        .warning-box {
+            background: rgba(249, 124, 15, 0.08);
+            border-left: 4px solid var(--orange);
+            padding: 15px 20px;
+            margin: 0 0 28px;
+            border-radius: 4px;
+            text-align: left;
+        }
+
+        .warning-box i {
+            color: var(--orange);
+            font-size: 20px;
+            margin-right: 10px;
+            vertical-align: middle;
+        }
+
+        .warning-box p {
+            display: inline;
+            color: #e0e0e0;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .warning-box strong {
+            color: #fff;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn-disclaimer {
+            border: none;
+            color: white;
+            padding: 14px 40px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            flex: 1;
+            min-width: 180px;
+            max-width: 250px;
+        }
+
+        .btn-disclaimer i {
+            margin-right: 8px;
+            font-size: 16px;
+        }
+
+        .btn-accept {
+            background: linear-gradient(135deg, #f97c0f 0%, #c85e00 100%);
+            box-shadow: 0 4px 15px rgba(249, 124, 15, 0.35);
+        }
+
+        .btn-accept:hover {
+            background: linear-gradient(135deg, #e06500 0%, #a34c00 100%);
+            box-shadow: 0 6px 20px rgba(249, 124, 15, 0.5);
+            transform: translateY(-2px);
+        }
+
+        .btn-decline {
+            background: linear-gradient(135deg, #6c757d 0%, #495057 100%);
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.3);
+        }
+
+        .btn-decline:hover {
+            background: linear-gradient(135deg, #5a6268 0%, #3d4246 100%);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .disclaimer-footer-info {
+            margin-top: 32px;
+            padding-top: 22px;
+            border-top: 1px solid rgba(249, 124, 15, 0.15);
+        }
+
+        .disclaimer-footer-info p {
+            color: #888;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .disclaimer-footer-info strong {
+            color: #bbb;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .disclaimer-card {
+                padding: 35px 25px;
+                max-width: 95%;
+            }
+
+            .disclaimer-title {
+                font-size: 24px;
+            }
+
+            .disclaimer-text {
+                font-size: 13px;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn-disclaimer {
+                padding: 12px 30px;
+                font-size: 14px;
+                max-width: 100%;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .panel {
+                width: 92%;
+                padding: 36px 24px 28px;
+            }
+
+            .page-footer {
+                text-align: center;
+            }
+
+            .disclaimer-badge {
+                font-size: 11px;
+                padding: 6px 16px;
+            }
+
+            .disclaimer-title {
+                font-size: 20px;
+            }
+        }
+    </style>
 </head>
 
 <body>
 
-    <nav class="navbar navbar-light" style="background-color: #414d55; color: white;">
-        <div class="container-fluid">
-            <div class="navbar-title">
-                <img src="img/logosegura.png" alt="Logo" />
-                <div style="display: flex; flex-direction: column; line-height: 1.2;">
-                    <strong style="color: rgb(249, 124, 15); letter-spacing: 2px; font-size: 1.4rem;">PASCAL</strong>
-                    <span style="font-size: 0.55em; color: #bbb; font-weight: 400; letter-spacing: 0.3px;">
-                        Plataforma Automatizada de Seguridad Ciudadana y Análisis Local
-                    </span>
-                </div>
-            </div>
-        </div>
-    </nav>
+    <div class="bg"></div>
 
-    <div class="content">
-        <div id="viewDiv">
-            <div class="map-dropdown">
-                <div id="conteoDiv" class="widget-box"></div>
-
-                <div id="iconQuery" class="icon-layer esri-icon" title="Watson: Área de Influencia"
-                    style="display: none;"></div>
-                <div id="iconRobos" class="icon-layer esri-icon" title="Robos" style="display: none;"></div>
-                <div id="iconConvivencia" class="icon-layer esri-icon" title="Casos de Convivencia"
-                    style="display: none;"></div>
-                <div id="iconExtorsion" class="icon-layer esri-icon" title="Extorsión" style="display: none;"></div>
-                <div id="iconP_Armada" class="icon-layer esri-icon" title="Persona Armada" style="display: none;"></div>
-                <div id="iconP_Herida" class="icon-layer esri-icon" title="Persona Herida" style="display: none;"></div>
-                <div id="iconSecuestro" class="icon-layer esri-icon" title="Secuestro" style="display: none;"></div>
-                <div id="iconSustancias" class="icon-layer esri-icon" title="Sustancias" style="display: none;"></div>
-                <div id="iconSicariato" class="icon-layer esri-icon" title="Muertes Violentas" style="display: none;">
-                </div>
+    <!-- ══ LOGIN ══ -->
+    <div class="wrapper">
+        <div class="panel">
+            <div class="panel-header">
+                <img src="img/logosegura.png" alt="Logo PASCAL" class="logo-img">
+                <div class="brand">PASCAL</div>
+                <!-- <div class="brand-sub">Plataforma Automatizada de Seguridad Ciudadana y Análisis Local</div> -->
             </div>
+
+            <div class="divider"></div>
+
+            <form id="loginForm" autocomplete="off">
+                <div class="field">
+                    <label>Usuario</label>
+                    <div class="field-wrap">
+                        <span class="field-icon">&#9632;</span>
+                        <input type="text" id="usuario" placeholder="Ingrese su usuario" required
+                            autocomplete="username">
+                    </div>
+                </div>
+                <div class="field">
+                    <label>Contraseña</label>
+                    <div class="field-wrap">
+                        <span class="field-icon">&#9679;</span>
+                        <input type="password" id="contrasena" placeholder="••••••••" required
+                            autocomplete="current-password">
+                    </div>
+                </div>
+                <button type="submit" class="btn-login" id="btnLogin">CONECTAR</button>
+            </form>
+
+            <div id="message"></div>
         </div>
-        <div id="timeSliderDiv"></div>
     </div>
 
-    <footer>
-        Elaborado por: Coordinación Técnica de Estadística y Datos - Sistema de Información Geográfica <br>
-        Fuente: Sistema de información Estadística Segura EP y ECU-911 Samborondón
-    </footer>
+    <!-- ══ DISCLAIMER (estructura SAM, colores PASCAL) ══ -->
+    <div id="disclaimerOverlay">
+        <div class="disclaimer-card">
 
-    <!-- Script principal del mapa -->
-    <script src="js/mapa.js"></script>
-  
+            <div class="disclaimer-logo">
+                <img src="img/logosegura.png" alt="Logo PASCAL">
+            </div>
+
+            <div class="disclaimer-badge">
+                <i class="bi bi-shield-lock-fill"></i> Acceso Restringido
+            </div>
+
+            <!-- <h1 class="disclaimer-title">Visor Geográfico PASCAL</h1> -->
+
+            <div class="disclaimer-divider"></div>
+
+            <div class="disclaimer-text">
+                <p>
+                    <strong>Aviso Legal:</strong> Este sistema contiene información clasificada como
+                    <strong>confidencial y privilegiada</strong>. El acceso y uso están limitados
+                    estrictamente al personal autorizado de la institución.
+                </p>
+            </div>
+
+            <div class="warning-box">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <p>
+                    Cualquier uso no autorizado, reproducción, copia o divulgación de la información
+                    contenida en este sistema está <strong>estrictamente prohibido</strong> y sujeto
+                    a las normativas legales vigentes. Al proceder, usted acepta la responsabilidad
+                    de mantener la confidencialidad de toda información consultada.
+                </p>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-disclaimer btn-decline" id="btnDecline">
+                    <i class="bi bi-x-circle-fill"></i> Rechazar
+                </button>
+                <button class="btn-disclaimer btn-accept" id="btnAccept">
+                    <i class="bi bi-check-circle-fill"></i> Aceptar
+                </button>
+            </div>
+
+            <div class="disclaimer-footer-info">
+                <p>
+                    <strong>Coordinación General de Gobernanza y Analítica de Datos</strong>
+                    Sistema de Información Geográfica — Segura EP © 2026
+                </p>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══ PAGE FOOTER ══ -->
+    <div class="page-footer">
+        Coordinación General de Gobernanza y Analítica de Datos — Sistema de Información Geográfica
+    </div>
+
+    <!-- ══ FIREBASE AUTH ══ -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCBCVUyZAOjaY1ma6l7aLR7iAsRXXyIeU4",
+            authDomain: "pascal-5ad2c.firebaseapp.com",
+            projectId: "pascal-5ad2c",
+            storageBucket: "pascal-5ad2c.firebasestorage.app",
+            messagingSenderId: "721479685616",
+            appId: "1:721479685616:web:c748dbfd993c71d109f935"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const loginForm = document.getElementById('loginForm');
+        const msgDiv = document.getElementById('message');
+        const btnLogin = document.getElementById('btnLogin');
+        const overlay = document.getElementById('disclaimerOverlay');
+        const btnAccept = document.getElementById('btnAccept');
+        const btnDecline = document.getElementById('btnDecline');
+
+        let pendingCredential = null;
+
+        sessionStorage.removeItem('disclaimerAccepted');
+
+        function showMsg(text, color = '#ffc107') {
+            msgDiv.style.color = color;
+            msgDiv.textContent = text;
+        }
+
+        // ── Submit login ──
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            showMsg('');
+            btnLogin.disabled = true;
+            btnLogin.textContent = 'VERIFICANDO…';
+
+            const usuario = document.getElementById('usuario').value.trim();
+            const password = document.getElementById('contrasena').value;
+            const email = `${usuario}@hotmail.com`;
+
+            try {
+                const cred = await signInWithEmailAndPassword(auth, email, password);
+                pendingCredential = cred;
+                showMsg('Usuario autenticado. Revise el aviso legal.', '#38c172');
+                overlay.classList.add('visible');
+            } catch (err) {
+                const msgs = {
+                    'auth/invalid-email': 'El usuario no existe o tiene un formato incorrecto.',
+                    'auth/user-disabled': 'Este usuario ha sido deshabilitado.',
+                    'auth/user-not-found': 'Usuario o contraseña incorrectos.',
+                    'auth/wrong-password': 'Usuario o contraseña incorrectos.',
+                    'auth/invalid-credential': 'Usuario o contraseña incorrectos.',
+                };
+                showMsg(msgs[err.code] || 'Error de autenticación. Intente nuevamente.');
+            } finally {
+                btnLogin.disabled = false;
+                btnLogin.textContent = 'CONECTAR';
+            }
+        });
+
+        // ── Aceptar ──
+        btnAccept.addEventListener('click', () => {
+            if (!pendingCredential) return;
+            overlay.style.animation = 'fadeOut 0.4s ease-in-out';
+            setTimeout(() => {
+                sessionStorage.setItem('disclaimerAccepted', 'true');
+                overlay.classList.remove('visible');
+                overlay.style.animation = '';
+                pendingCredential = null;
+                window.location.href = 'main.html';
+            }, 400);
+        });
+
+        // ── Rechazar ──
+        btnDecline.addEventListener('click', () => {
+            overlay.style.animation = 'fadeOut 0.4s ease-in-out';
+            setTimeout(() => {
+                overlay.classList.remove('visible');
+                overlay.style.animation = '';
+                pendingCredential = null;
+                showMsg('Debe aceptar los términos para continuar.');
+                document.getElementById('usuario').value = '';
+                document.getElementById('contrasena').value = '';
+            }, 400);
+        });
+    </script>
 
 </body>
 

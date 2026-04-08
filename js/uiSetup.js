@@ -46,7 +46,8 @@ define([
             { id: "incidentes", label: "Incidentes", icon: "layers",    isEmoji: false },
             { id: "rutas",      label: "Rutas",      icon: "road-sign", isEmoji: false },
             { id: "camaras",    label: "Cámaras",    icon: "video",     isEmoji: false },
-            { id: "zonas",      label: "Zonas",      icon: "map-pin",   isEmoji: false }
+            { id: "zonas",      label: "Zonas",      icon: "map-pin",   isEmoji: false },
+            { id: "radar",      label: "Radar",      icon: "analysis",  isEmoji: false }
         ];
 
         const panel  = document.createElement("div");
@@ -150,31 +151,13 @@ define([
             panes[id].appendChild(slot);
         });
 
-        panel.append(tabBar, body);
-
-        view.ui.add(new Expand({
-            view,
-            content: panel,
-            expandIcon: "layers",
-            expandTooltip: "Panel de Control",
-            expanded: true
-        }), "top-left");
-
-        // ── 6. Watson · Radar — bottom-left ───────────────────────────────────
-        const watsonPanel = document.createElement("div");
-        watsonPanel.className = "watson-panel cp-panel";
-
-        const watsonHeader = document.createElement("div");
-        watsonHeader.className = "watson-header";
-        watsonHeader.innerHTML = `
-            <span>Watson · Radar de Consulta</span>
-        `;
-        watsonPanel.appendChild(watsonHeader);
+        // ── Pane: Radar (Watson · Radar integrado) ────────────────────────────
+        const radarPane = panes["radar"];
 
         const watsonTitle = document.createElement("p");
         watsonTitle.className = "watson-title";
         watsonTitle.textContent = "Seleccione una geometría:";
-        watsonPanel.appendChild(watsonTitle);
+        radarPane.appendChild(watsonTitle);
 
         const watsonBtnBar = document.createElement("div");
         watsonBtnBar.className = "watson-btnbar";
@@ -197,7 +180,7 @@ define([
             `;
             watsonBtnBar.appendChild(btn);
         });
-        watsonPanel.appendChild(watsonBtnBar);
+        radarPane.appendChild(watsonBtnBar);
 
         const bufferWrap = document.createElement("div");
         bufferWrap.className = "watson-buffer-wrap";
@@ -209,20 +192,23 @@ define([
                    min="0" max="2000" value="0" step="10"
                    style="width:100%;accent-color:#0079c1;" />
         `;
-        watsonPanel.appendChild(bufferWrap);
+        radarPane.appendChild(bufferWrap);
 
         const clearBtn = document.createElement("button");
         clearBtn.className = "watson-clear-btn";
         clearBtn.innerHTML = `<calcite-icon icon="trash" scale="s"></calcite-icon> Limpiar`;
-        watsonPanel.appendChild(clearBtn);
+        radarPane.appendChild(clearBtn);
+
+        // ── Montar panel ──────────────────────────────────────────────────────
+        panel.append(tabBar, body);
 
         view.ui.add(new Expand({
             view,
-            content: watsonPanel,
-            expandIcon: "analysis",
-            expandTooltip: "Watson · Radar",
+            content: panel,
+            expandIcon: "layers",
+            expandTooltip: "Panel de Control",
             expanded: true
-        }), "bottom-left");
+        }), "top-left");
 
         // ── API pública ───────────────────────────────────────────────────────
         return {
